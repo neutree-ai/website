@@ -1,0 +1,290 @@
+---
+// Showcase section - Interactive tabs with visual content
+const showcaseItems = [
+  {
+    id: "clusters",
+    label: "Clusters",
+    title: "Unified Cluster Management",
+    description:
+      "Manage your compute infrastructure across multiple clusters with centralized control and monitoring.",
+    image: "/placeholder-screenshot-1.png",
+    docsLink: "#",
+  },
+  {
+    id: "models",
+    label: "Models",
+    title: "Model Lifecycle Management",
+    description:
+      "Version control, deployment tracking, and rollback capabilities for your AI models across environments.",
+    image: "/placeholder-screenshot-2.png",
+    docsLink: "#",
+  },
+  {
+    id: "endpoints",
+    label: "Inference Endpoints",
+    title: "Production-Ready API Endpoints",
+    description:
+      "Deploy and scale model inference endpoints with load balancing, auto-scaling, and performance optimization.",
+    image: "/placeholder-screenshot-3.png",
+    docsLink: "#",
+  },
+];
+---
+
+<section class="showcase">
+  <div class="container">
+    <div class="showcase-tabs" role="tablist">
+      {
+        showcaseItems.map((item, index) => (
+          <button
+            class={`tab-button ${index === 0 ? "active" : ""}`}
+            role="tab"
+            aria-selected={index === 0 ? "true" : "false"}
+            aria-controls={`panel-${item.id}`}
+            data-tab={item.id}
+          >
+            {item.label}
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="showcase-content">
+      {
+        showcaseItems.map((item, index) => (
+          <div
+            id={`panel-${item.id}`}
+            class={`tab-panel ${index === 0 ? "active" : ""}`}
+            role="tabpanel"
+            data-panel={item.id}
+          >
+            <div class="panel-layout">
+              <div class="panel-text">
+                <h3 class="panel-title">{item.title}</h3>
+                <p class="panel-description">{item.description}</p>
+                <a href={item.docsLink} class="docs-link">
+                  Documentation
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </a>
+              </div>
+              <div class="panel-image">
+                <img src={item.image} alt={item.title} />
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tab-button");
+    const panels = document.querySelectorAll(".tab-panel");
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const targetPanel = tab.getAttribute("data-tab");
+
+        // Remove active states
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
+        panels.forEach((p) => p.classList.remove("active"));
+
+        // Add active states
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+        const panel = document.querySelector(`[data-panel="${targetPanel}"]`);
+        if (panel) {
+          panel.classList.add("active");
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .showcase {
+    padding: var(--spacing-3xl) var(--spacing-md);
+    background-color: var(--color-bg);
+  }
+
+  .container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+  }
+
+  .showcase-tabs {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl);
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab-button {
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    position: relative;
+    margin-bottom: -1px;
+  }
+
+  .tab-button:hover {
+    color: var(--color-text);
+  }
+
+  .tab-button.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .showcase-content {
+    position: relative;
+    min-height: 400px;
+  }
+
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .panel-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: var(--spacing-3xl);
+    align-items: center;
+  }
+
+  .panel-text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .panel-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    line-height: 1.2;
+  }
+
+  .panel-description {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .docs-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primary);
+    font-weight: 500;
+    text-decoration: none;
+    transition: gap 0.2s ease;
+    align-self: flex-start;
+  }
+
+  .docs-link:hover {
+    gap: 0.75rem;
+  }
+
+  .panel-image {
+    background-color: var(--color-bg-alt);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .panel-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 968px) {
+    .panel-layout {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-xl);
+    }
+
+    .panel-text {
+      order: 2;
+    }
+
+    .panel-image {
+      order: 1;
+    }
+
+    .panel-title {
+      font-size: 1.5rem;
+    }
+
+    .panel-description {
+      font-size: 1rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .showcase {
+      padding: var(--spacing-2xl) var(--spacing-md);
+    }
+
+    .showcase-tabs {
+      gap: 0;
+    }
+
+    .tab-button {
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: 0.9375rem;
+    }
+
+    .showcase-content {
+      min-height: 300px;
+    }
+  }
+</style>
