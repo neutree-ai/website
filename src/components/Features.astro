@@ -5,31 +5,37 @@ const features = [
     icon: "chip" as const,
     title: "Heterogeneous Accelerator Support",
     description:
-      "Compatible with diverse AI accelerators including NVIDIA GPU, AMD GPU, and Intel XPU. Deploy on the hardware that fits your needs.",
+      "Deploy across NVIDIA GPU, AMD GPU, and Intel XPU with a unified runtime. Models and APIs stay the same — hardware becomes a flexible choice, not a constraint.",
   },
   {
     icon: "layers" as const,
     title: "Flexible Private Deployment",
     description:
-      "Support for bare-metal, virtualized, and containerized deployment modes. Choose what works for your infrastructure.",
+      "Run models on bare metal, VMs, or containers within your own environment. No external dependency or cloud lock-in — your infrastructure defines the boundary.",
   },
   {
     icon: "shield" as const,
     title: "Stability & Performance",
     description:
-      "Built for production LLM inference with high availability, rolling upgrades, KV-cache aware routing, and elastic scaling.",
+      "Production-grade LLM serving with high availability and rolling upgrades. KV-cache aware routing and elastic scaling ensure consistent low latency under real workloads.",
   },
   {
     icon: "building" as const,
     title: "Enterprise-grade Features",
     description:
-      "Designed for organizations with multi-tenancy, usage-based billing, comprehensive monitoring, and fine-grained access control.",
+      "Built for organizations that need governance, visibility, and control. Multi-tenancy, usage-based accounting, and fine-grained access policies included by design.",
   },
   {
     icon: "code" as const,
     title: "Easy to Operate & Integrate",
     description:
-      "Seamlessly integrates with mainstream inference engines and provides pre-validated model catalog for quick deployment.",
+      "Works with mainstream inference engines and MLOps platforms. Unified APIs and pre-validated model catalog reduce integration friction and operational overhead.",
+  },
+  {
+    icon: "code" as const,
+    title: "Open Source & Community",
+    description:
+      "Fully open source and actively developed in the open. Transparent roadmap, collaborative ecosystem, and vendor-independent evolution.",
   },
 ];
 
@@ -50,8 +56,9 @@ const icons: Record<string, string> = {
     <div class="features-header">
       <h2 class="section-title">Why Neutree</h2>
       <p class="section-description">
-        Built on modern architecture with enterprise-grade reliability and
-        operational excellence.
+        Built on modern architecture<br />
+        with enterprise-grade reliability<br />
+        and operational excellence.
       </p>
     </div>
 
@@ -59,7 +66,6 @@ const icons: Record<string, string> = {
       {
         features.map((feature) => (
           <div class="feature-card">
-            <div class="feature-icon" set:html={icons[feature.icon]} />
             <h3 class="feature-title">{feature.title}</h3>
             <p class="feature-description">{feature.description}</p>
           </div>
@@ -71,96 +77,156 @@ const icons: Record<string, string> = {
 
 <style>
   .features {
-    padding: var(--spacing-3xl) var(--spacing-md);
-    background-color: var(--color-bg);
+    padding: 0 var(--padding-horizontal-desktop);
+
   }
 
   .container {
     max-width: var(--max-width-content);
     margin: 0 auto;
+    border: 1px solid var(--color-border);
   }
 
   .features-header {
-    text-align: center;
-    margin-bottom: var(--spacing-3xl);
-    max-width: var(--max-width-text);
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    height: 16rem;
   }
 
   .section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-section-subtitle);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-tertiary);
+    margin: 0;
   }
 
   .section-description {
-    font-size: 1.125rem;
-    color: var(--color-text-secondary);
-    line-height: 1.7;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-section-title);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
   }
 
   .feature-card {
-    padding: var(--spacing-xl);
-    background-color: var(--color-bg-alt);
-    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--color-bg);
     border: 1px solid var(--color-border);
+    border-top: none;
     transition: all 0.3s ease;
   }
 
+  .feature-card:nth-child(odd) {
+    border-right: none;
+    border-left: none;
+  }
+
+  .feature-card:nth-child(even) {
+    border-right: none;
+  }
+
+  .feature-card:nth-last-child(-n+2) {
+    border-bottom: none;
+  }
+
+  .feature-card:nth-child(even):last-child {
+    border-right: none;
+  }
+
   .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    border-color: var(--color-primary);
+    background-color: var(--color-bg-subtle);
   }
 
   .feature-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: var(--spacing-md);
-    color: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .feature-icon :global(svg) {
-    width: 100%;
-    height: 100%;
+    display: none;
   }
 
   .feature-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-feature-title);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tighter);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .feature-description {
-    font-size: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-feature-desc);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tighter);
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    margin: 0;
   }
 
-  @media (max-width: 768px) {
+  /* Tablet Responsive */
+  @media (max-width: 1279px) {
     .features {
-      padding: var(--spacing-2xl) var(--spacing-md);
+      padding: 0 var(--padding-horizontal-tablet);
     }
 
-    .section-title {
-      font-size: 2rem;
+    .features-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .feature-card {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    .features {
+      padding: 0 var(--padding-horizontal-mobile);
+    }
+
+    .features-header {
+      padding: var(--spacing-md);
     }
 
     .features-grid {
       grid-template-columns: 1fr;
-      gap: var(--spacing-lg);
+    }
+
+    .feature-card {
+      padding: var(--spacing-md);
+      border-right: none !important;
+      border-left: none;
+    }
+
+    .feature-card:nth-child(odd) {
+      border-right: none;
+    }
+
+    .feature-card:nth-last-child(-n+2) {
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .feature-card:last-child {
+      border-bottom: none;
     }
   }
 </style>

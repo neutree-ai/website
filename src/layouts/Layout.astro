@@ -27,7 +27,7 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -40,37 +40,121 @@ const {
 
 <style is:global>
   :root {
-    /* Color Palette - Tech-focused, developer-friendly */
-    --color-bg: #ffffff;
-    --color-bg-alt: #f8f9fa;
-    --color-text: #1a1a1a;
-    --color-text-secondary: #6b7280;
-    --color-primary: #2563eb;
-    --color-primary-hover: #1d4ed8;
-    --color-border: #e5e7eb;
-    --color-accent: #10b981;
+    /* Color System - Based on Figma Design */
+    --color-text-primary: #0C2849;
+    --color-text-secondary: rgba(12, 40, 73, 0.8);
+    --color-text-tertiary: rgba(12, 40, 73, 0.6);
+    --color-text-footer: rgba(12, 40, 73, 0.5);
+    
+    --color-bg: #FFFFFF;
+    --color-bg-subtle: rgba(12, 40, 73, 0.02);
+    --color-bg-footer: rgba(12, 40, 73, 0.05);
+    
+    --color-border: rgba(12, 40, 73, 0.1);
+    --color-border-strong: rgba(12, 40, 73, 0.3);
+    
+    /* Legacy color variables for backward compatibility */
+    --color-text: var(--color-text-primary);
+    --color-bg-alt: var(--color-bg-subtle);
+    --color-primary: var(--color-text-primary);
+    --color-primary-hover: rgba(12, 40, 73, 0.9);
 
     /* Typography */
-    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    --font-sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
       sans-serif;
+    --font-mono: "DM Mono", "Courier New", monospace;
 
-    /* Spacing */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 1.5rem;
-    --spacing-lg: 2rem;
-    --spacing-xl: 3rem;
-    --spacing-2xl: 4rem;
-    --spacing-3xl: 6rem;
+    /* Spacing System - Precise px values from Figma */
+    --spacing-xs: 8px;
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 20px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+    --spacing-3xl: 40px;
+    --spacing-4xl: 48px;
+    --spacing-5xl: 60px;
+    --spacing-6xl: 64px;
+    --spacing-7xl: 80px;
+    --spacing-hero-top: 160px;
+
+    /* Font Sizes */
+    --font-size-hero-title: 72px;
+    --font-size-hero-subtitle: 48px;
+    --font-size-hero-desc: 20px;
+    --font-size-section-title: 32px;
+    --font-size-section-subtitle: 20px;
+    --font-size-feature-title: 24px;
+    --font-size-feature-desc: 16px;
+    --font-size-button: 16px;
+    --font-size-footer: 14px;
+
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.302;
+
+    /* Letter Spacing */
+    --letter-spacing-tight: -0.03em; /* -3% */
+    --letter-spacing-tighter: -0.06em; /* -6% */
+
+    /* Shadows */
+    --shadow-button-primary: 
+      0px 0.27px 2.35px 0px rgba(0, 0, 0, 0.02),
+      0px 2.54px 8.36px 0px rgba(0, 0, 0, 0.04),
+      0px 9.99px 23.33px 0px rgba(0, 0, 0, 0.05),
+      0px 47px 80px 0px rgba(0, 0, 0, 0.07);
+      
+    --shadow-button-outlined: 
+      0px 0.27px 2.35px 0px rgba(12, 40, 73, 0.02),
+      0px 2.54px 8.36px 0px rgba(12, 40, 73, 0.04),
+      0px 9.99px 23.33px 0px rgba(12, 40, 73, 0.05),
+      0px 47px 80px 0px rgba(12, 40, 73, 0.07);
 
     /* Border radius */
     --radius-sm: 0.375rem;
-    --radius-md: 0.5rem;
+    --radius-md: 8px;
     --radius-lg: 0.75rem;
 
-    /* Max widths */
+    /* Layout */
     --max-width-content: 1280px;
     --max-width-text: 720px;
+    --padding-horizontal-desktop: 80px;
+    --padding-horizontal-tablet: 40px;
+    --padding-horizontal-mobile: 20px;
+  }
+
+  /* Medium Desktop - 1280px to 1440px */
+  @media (min-width: 1280px) and (max-width: 1440px) {
+    :root {
+      --padding-horizontal-desktop: 40px;
+    }
+  }
+
+  /* Tablet Responsive */
+  @media (max-width: 1279px) {
+    :root {
+      --font-size-hero-title: 48px;
+      --font-size-hero-subtitle: 32px;
+      --font-size-hero-desc: 18px;
+      --font-size-section-title: 28px;
+      --font-size-feature-title: 20px;
+      --padding-horizontal-desktop: var(--padding-horizontal-tablet);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    :root {
+      --font-size-hero-title: 36px;
+      --font-size-hero-subtitle: 24px;
+      --font-size-hero-desc: 18px;
+      --font-size-section-title: 24px;
+      --font-size-section-subtitle: 18px;
+      --font-size-feature-title: 18px;
+      --font-size-feature-desc: 14px;
+      --padding-horizontal-desktop: var(--padding-horizontal-mobile);
+      --spacing-hero-top: 80px;
+    }
   }
 
   * {
@@ -89,8 +173,8 @@ const {
     margin: 0;
     width: 100%;
     min-height: 100vh;
-    background-color: var(--color-bg);
-    color: var(--color-text);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-primary);
     line-height: 1.6;
   }
 
@@ -100,22 +184,24 @@ const {
   h4,
   h5,
   h6 {
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--color-text);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    color: var(--color-text-primary);
+    letter-spacing: var(--letter-spacing-tight);
   }
 
   p {
     line-height: 1.6;
+    color: var(--color-text-secondary);
   }
 
   a {
-    color: var(--color-primary);
+    color: var(--color-text-primary);
     text-decoration: none;
     transition: color 0.2s ease;
   }
 
   a:hover {
-    color: var(--color-primary-hover);
+    color: var(--color-text-secondary);
   }
 </style>
