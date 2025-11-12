@@ -4,46 +4,58 @@ const features = [
   {
     icon: "chip" as const,
     title: "Heterogeneous Accelerator Support",
-    description:
-      "Deploy across NVIDIA GPU, AMD GPU, and Intel XPU with a unified runtime. Models and APIs stay the same — hardware becomes a flexible choice, not a constraint.",
+    description: [
+      "Deploy across NVIDIA GPU, AMD GPU, and Intel XPU with a unified runtime.",
+      "Models and APIs stay the same — hardware becomes a flexible choice, not a constraint.",
+    ],
     imageClear: "/images/1-heter-clear.png",
     imageDither: "/images/1-heter-dither.png",
   },
   {
     icon: "layers" as const,
     title: "Flexible Private Deployment",
-    description:
-      "Run models on bare metal, VMs, or containers within your own environment. No external dependency or cloud lock-in — your infrastructure defines the boundary.",
+    description: [
+      "Run models on bare metal, VMs, or containers within your own environment.",
+      "No external dependency or cloud lock-in — your infrastructure defines the boundary.",
+    ],
     imageClear: "/images/2-flexible-clear.png",
     imageDither: "/images/2-flexible-dither.png",
   },
   {
     icon: "shield" as const,
     title: "Stability & Performance",
-    description:
-      "Production-grade LLM serving with high availability and rolling upgrades. KV-cache aware routing and elastic scaling ensure consistent low latency under real workloads.",
+    description: [
+      "Production-grade LLM serving with high availability and rolling upgrades.",
+      "KV-cache aware routing and elastic scaling ensure consistent low latency under real workloads.",
+    ],
     imageClear: "/images/3-stability-clear.png",
     imageDither: "/images/3-stability-dither.png",
   },
   {
     icon: "building" as const,
     title: "Enterprise-grade Features",
-    description:
-      "Built for organizations that need governance, visibility, and control. Multi-tenancy, usage-based accounting, and fine-grained access policies included by design.",
+    description: [
+      "Built for organizations that need governance, visibility, and control.",
+      "Multi-tenancy, usage-based accounting, and fine-grained access policies included by design.",
+    ],
     imageClear: "/images/4-enterprise-clear.png",
     imageDither: "/images/4-enterprise-dither.png",
   },
   {
     icon: "code" as const,
     title: "Easy to Operate & Integrate",
-    description:
-      "Works with mainstream inference engines and MLOps platforms. Unified APIs and pre-validated model catalog reduce integration friction and operational overhead.",
+    description: [
+      "Works with mainstream inference engines and MLOps platforms.",
+      "Unified APIs and pre-validated model catalog reduce integration friction and operational overhead.",
+    ],
   },
   {
     icon: "code" as const,
     title: "Open Source & Community",
-    description:
-      "Fully open source and actively developed in the open. Transparent roadmap, collaborative ecosystem, and vendor-independent evolution.",
+    description: [
+      "Fully open source and actively developed in the open.",
+      "Transparent roadmap, collaborative ecosystem, and vendor-independent evolution.",
+    ],
     imageClear: "/images/6-open-clear.png",
     imageDither: "/images/6-open-dither.png",
   },
@@ -78,7 +90,13 @@ const icons: Record<string, string> = {
           <div class="feature-card">
             <div class="feature-content">
               <h3 class="feature-title">{feature.title}</h3>
-              <p class="feature-description">{feature.description}</p>
+              {Array.isArray(feature.description) ? (
+                feature.description.map((sentence) => (
+                  <p class="feature-description">{sentence}</p>
+                ))
+              ) : (
+                <p class="feature-description">{feature.description}</p>
+              )}
             </div>
             {feature.imageClear && (
               <div class="feature-image">
