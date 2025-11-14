@@ -2,12 +2,20 @@
 // Header - Navigation bar with logo and links
 ---
 
-<header class="header">
+<header class="header" id="header">
   <div class="container">
     <div class="header-content">
       <a href="/" class="logo">
-        <img src="/logo.png" alt="Neutree" class="logo-icon" />
-        <span class="logo-text">Neutree</span>
+        <img 
+          src="/images/neutree-logo-shape.svg" 
+          alt="Neutree" 
+          class="logo-shape" 
+        />
+        <img 
+          src="/images/neutree-logo-text.svg" 
+          alt="Neutree" 
+          class="logo-text" 
+        />
       </a>
 
       <nav class="nav">
@@ -43,27 +51,72 @@
   </div>
 </header>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('header');
+    if (!header) return;
+    
+    const logoText = header.querySelector('.logo-text');
+    const heroBrand = document.querySelector('.hero-brand');
+    
+    if (!logoText || !heroBrand) return;
+
+    function checkScroll() {
+      if (!header || !heroBrand) return;
+      
+      const headerRect = header.getBoundingClientRect();
+      const headerBottom = headerRect.bottom;
+      
+      const heroBrandRect = heroBrand.getBoundingClientRect();
+      const heroBrandCenter = heroBrandRect.top + heroBrandRect.height / 2;
+      
+      // 当 Hero 文字中部接触到导航条底部时
+      if (heroBrandCenter <= headerBottom) {
+        header.classList.add('logo-text-visible');
+      } else {
+        header.classList.remove('logo-text-visible');
+      }
+    }
+
+    // 初始检查
+    checkScroll();
+
+    // 滚动监听（使用节流优化性能）
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          checkScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    });
+  });
+</script>
+
 <style>
   .header {
     position: sticky;
     top: 0;
     z-index: 100;
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: #FAFBFB;
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--color-border);
+    padding: 0 var(--padding-horizontal-desktop);
   }
 
   .container {
     max-width: var(--max-width-content);
     margin: 0 auto;
-    padding: 0 var(--spacing-md);
+    
   }
 
   .header-content {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    height: 64px;
+    padding: 12px 0;
+    width: 100%;
   }
 
   .logo {
@@ -71,73 +124,104 @@
     align-items: center;
     gap: 0.75rem;
     text-decoration: none;
-    color: var(--color-text);
-    font-weight: 600;
-    font-size: 1.25rem;
+    color: var(--color-text-primary);
     transition: opacity 0.2s ease;
+    height: 40px;
   }
 
   .logo:hover {
     opacity: 0.8;
   }
 
-  .logo-icon {
-    width: 32px;
-    height: 32px;
+  .logo-shape {
+    width: 35px;
+    height: 40px;
     flex-shrink: 0;
+    display: block;
   }
 
   .logo-text {
-    color: var(--color-text);
+    width: 80px;
+    height: 17px;
+    flex-shrink: 0;
+    display: block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+
+  .header.logo-text-visible .logo-text {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .nav {
     display: flex;
     align-items: center;
-    gap: var(--spacing-lg);
+    gap: 24px;
   }
 
   .nav-link {
-    color: var(--color-text-secondary);
+    color: var(--color-text-primary);
     text-decoration: none;
+    font-family: var(--font-sans);
     font-weight: 500;
-    font-size: 1rem;
-    transition: color 0.2s ease;
+    font-size: var(--font-size-button);
+    line-height: 1.302em;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
-  }
-
-  .nav-link:hover {
-    color: var(--color-text);
-  }
-
-  .nav-icon {
-    color: var(--color-text);
-    padding: 0.5rem;
-    margin: -0.5rem;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 12px;
     border-radius: var(--radius-sm);
   }
 
+  .nav-link:hover {
+    background-color: rgba(12, 40, 73, 0.1);
+    color: var(--color-text-primary);
+  }
+
+  .nav-icon {
+    color: var(--color-text-primary);
+    padding: 8px 12px;
+    margin: 0;
+    gap: 10px;
+  }
+
   .nav-icon:hover {
-    background-color: var(--color-bg-alt);
+    background-color: rgba(12, 40, 73, 0.1);
   }
 
   .nav-icon svg {
     display: block;
+    width: 16px;
+    height: 16px;
   }
 
-  @media (max-width: 640px) {
-    .header-content {
-      height: 56px;
+  /* Tablet Responsive */
+  @media (max-width: 1279px) {
+    .header {
+      padding: 0 var(--padding-horizontal-tablet);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    .header {
+      padding: 0 var(--padding-horizontal-mobile);
     }
 
-    .logo {
-      font-size: 1.125rem;
-    }
-
-    .logo-icon {
+    .logo-shape {
       width: 28px;
-      height: 28px;
+      height: 32px;
+    }
+
+    .logo-text {
+      width: 64px;
+      height: 14px;
     }
 
     .nav {
