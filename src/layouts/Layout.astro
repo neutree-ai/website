@@ -2,12 +2,20 @@
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = "Neutree - Enterprise-grade Private Model-as-a-Service Platform",
   description = "Manage AI infrastructure with simplicity and deploy cutting-edge AI capabilities efficiently. Support for heterogeneous accelerators, flexible deployment modes, and enterprise-grade features.",
+  ogImage = "/images/og-image.png",
 } = Astro.props;
+
+// 构建完整的 OG image URL
+const siteUrl = import.meta.env.SITE || "";
+const imageUrl = ogImage.startsWith("http") 
+  ? ogImage 
+  : `${siteUrl}${ogImage.startsWith("/") ? ogImage : `/${ogImage}`}`;
 ---
 
 <!doctype html>
@@ -22,6 +30,17 @@ const {
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:site_name" content="Neutree" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
