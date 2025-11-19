@@ -5,31 +5,29 @@
 <section class="hero">
   <div class="container">
     <div class="hero-content">
-      <h1 class="hero-title">
-        Enterprise-grade Private<br />Model-as-a-Service Platform
-      </h1>
-      <p class="hero-subtitle">
-        Deploy and scale AI models in your own infrastructure with
-        production-ready features and hardware flexibility.
-      </p>
-      <div class="hero-cta">
-        <a href="#demo" class="btn btn-primary">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+      <div class="hero-left">
+        <div class="hero-header">
+          <h1 class="hero-brand">Neutree</h1>
+          <h2 class="hero-title">
+            Enterprise-grade Private<br />Model-as-a-Service Platform
+          </h2>
+        </div>
+      </div>
+      <div class="hero-right">
+        <p class="hero-text">
+          Deploy and scale AI models in your own infrastructure with
+          production-ready features and hardware flexibility.
+        </p>
+        <div class="hero-cta">
+          <a
+            href="https://github.com/neutree-ai/neutree"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
           >
-            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-          </svg>
-          Watch Demo
-        </a>
-        <a href="#getting-started" class="btn btn-outline"> Getting Started </a>
+            Get Started
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -37,9 +35,7 @@
 
 <style>
   .hero {
-    padding: var(--spacing-3xl) var(--spacing-md);
-    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-    border-bottom: 1px solid var(--color-border);
+    padding: var(--spacing-hero-top) var(--padding-horizontal-desktop) var(--spacing-5xl);
   }
 
   .container {
@@ -48,41 +44,76 @@
   }
 
   .hero-content {
-    max-width: var(--max-width-text);
-    margin: 0 auto;
-    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    align-items: flex-end;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+    padding: 12px 0;
+  }
+
+  .hero-brand {
+    font-family: var(--font-sans);
+    font-size: var(--font-size-hero-title);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .hero-title {
-    font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-lg);
-    letter-spacing: -0.02em;
-    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-hero-subtitle);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
-  .hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-xl);
-    line-height: 1.7;
+  .hero-text {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-hero-desc);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .hero-cta {
     display: flex;
-    gap: var(--spacing-md);
-    justify-content: center;
-    flex-wrap: wrap;
+    gap: var(--spacing-xs);
   }
 
   .btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.875rem 1.75rem;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: 8px 12px;
     border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 1rem;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--font-size-button);
+    line-height: var(--line-height-tight);
     transition: all 0.2s ease;
     cursor: pointer;
     border: none;
@@ -90,50 +121,54 @@
   }
 
   .btn-primary {
-    background-color: var(--color-primary);
-    color: white;
+    background-color: var(--color-text-primary);
+    color: var(--color-bg);
+    box-shadow: var(--shadow-button-primary);
   }
 
   .btn-primary:hover {
-    background-color: var(--color-primary-hover);
+    background-color: rgba(12, 40, 73, 0.9);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-  }
-
-  .btn-secondary {
-    background-color: var(--color-text);
-    color: white;
-  }
-
-  .btn-secondary:hover {
-    background-color: #000000;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-button-primary);
   }
 
   .btn-outline {
-    background-color: transparent;
-    color: var(--color-text);
-    border: 2px solid var(--color-border);
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-border-strong);
+    box-shadow: var(--shadow-button-outlined);
   }
 
   .btn-outline:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-button-outlined);
   }
 
-  @media (max-width: 768px) {
+  /* Tablet Responsive */
+  @media (max-width: 1023px) {
     .hero {
-      padding: var(--spacing-2xl) var(--spacing-md);
+      padding: var(--spacing-hero-top) var(--padding-horizontal-tablet) var(--spacing-4xl);
     }
 
-    .hero-title {
-      font-size: 2rem;
+    .hero-content {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-2xl);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    .hero {
+      padding: var(--spacing-hero-top) var(--padding-horizontal-mobile) var(--spacing-3xl);
     }
 
-    .hero-subtitle {
-      font-size: 1.125rem;
+    .hero-content {
+      grid-template-columns: 1fr;
+      gap: var(--spacing-xl);
+    }
+
+    .hero-right {
+      gap: var(--spacing-xl);
     }
 
     .hero-cta {
@@ -142,7 +177,6 @@
 
     .btn {
       width: 100%;
-      justify-content: center;
     }
   }
 </style>

@@ -4,45 +4,65 @@ const features = [
   {
     icon: "chip" as const,
     title: "Heterogeneous Accelerator Support",
-    description:
-      "Compatible with diverse AI accelerators including NVIDIA GPU, AMD GPU, and Intel XPU. Deploy on the hardware that fits your needs.",
+    description: [
+      "Deploy across NVIDIA GPU, AMD GPU, and Intel XPU with a unified runtime.",
+      "Models and APIs stay the same — hardware becomes a flexible choice, not a constraint.",
+    ],
+    imageClear: "/images/1-heter-clear.png",
+    imageDither: "/images/1-heter-dither.png",
   },
   {
     icon: "layers" as const,
     title: "Flexible Private Deployment",
-    description:
-      "Support for bare-metal, virtualized, and containerized deployment modes. Choose what works for your infrastructure.",
+    description: [
+      "Run models on bare metal, VMs, or containers within your own environment.",
+      "No external dependency or cloud lock-in — your infrastructure defines the boundary.",
+    ],
+    imageClear: "/images/2-flexible-clear.png",
+    imageDither: "/images/2-flexible-dither.png",
   },
   {
     icon: "shield" as const,
     title: "Stability & Performance",
-    description:
-      "Built for production LLM inference with high availability, rolling upgrades, KV-cache aware routing, and elastic scaling.",
+    description: [
+      "Production-grade LLM serving with high availability and rolling upgrades.",
+      "KV-cache aware routing and elastic scaling ensure consistent low latency under real workloads.",
+    ],
+    imageClear: "/images/3-stability-clear.png",
+    imageDither: "/images/3-stability-dither.png",
   },
   {
     icon: "building" as const,
     title: "Enterprise-grade Features",
-    description:
-      "Designed for organizations with multi-tenancy, usage-based billing, comprehensive monitoring, and fine-grained access control.",
+    description: [
+      "Built for organizations that need governance, visibility, and control.",
+      "Multi-tenancy, usage-based accounting, and fine-grained access policies included by design.",
+    ],
+    imageClear: "/images/4-enterprise-clear.png",
+    imageDither: "/images/4-enterprise-dither.png",
   },
   {
     icon: "code" as const,
     title: "Easy to Operate & Integrate",
-    description:
-      "Seamlessly integrates with mainstream inference engines and provides pre-validated model catalog for quick deployment.",
+    description: [
+      "Works with mainstream inference engines and models.",
+      "Unified APIs and pre-validated model catalog reduce integration friction and operational overhead.",
+    ],
+    imageClear: "/images/5-easy-clear.png",
+    imageDither: "/images/5-easy-dither.png",
+  },
+  {
+    icon: "code" as const,
+    title: "Open Source & Community",
+    description: [
+      "Fully open source and actively developed in the open.",
+      "Transparent roadmap, collaborative ecosystem, and vendor-independent evolution.",
+    ],
+    imageClear: "/images/6-open-clear.png",
+    imageDither: "/images/6-open-dither.png",
   },
 ];
 
-const icons: Record<string, string> = {
-  chip: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>',
-  layers:
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>',
-  shield:
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>',
-  building:
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>',
-  code: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
-};
 ---
 
 <section class="features" id="features">
@@ -50,8 +70,9 @@ const icons: Record<string, string> = {
     <div class="features-header">
       <h2 class="section-title">Why Neutree</h2>
       <p class="section-description">
-        Built on modern architecture with enterprise-grade reliability and
-        operational excellence.
+        Built on modern architecture<br />
+        with enterprise-grade reliability<br />
+        and operational excellence.
       </p>
     </div>
 
@@ -59,9 +80,30 @@ const icons: Record<string, string> = {
       {
         features.map((feature) => (
           <div class="feature-card">
-            <div class="feature-icon" set:html={icons[feature.icon]} />
-            <h3 class="feature-title">{feature.title}</h3>
-            <p class="feature-description">{feature.description}</p>
+            <div class="feature-content">
+              <h3 class="feature-title">{feature.title}</h3>
+              {Array.isArray(feature.description) ? (
+                feature.description.map((sentence) => (
+                  <p class="feature-description">{sentence}</p>
+                ))
+              ) : (
+                <p class="feature-description">{feature.description}</p>
+              )}
+            </div>
+            {feature.imageClear && (
+              <div class="feature-image">
+                <div 
+                  class="feature-image-clear"
+                  style={`background-image: url(${feature.imageClear})`}
+                ></div>
+                {feature.imageDither && feature.imageDither !== feature.imageClear && (
+                  <div 
+                    class="feature-image-dither"
+                    style={`background-image: url(${feature.imageDither})`}
+                  ></div>
+                )}
+              </div>
+            )}
           </div>
         ))
       }
@@ -71,96 +113,194 @@ const icons: Record<string, string> = {
 
 <style>
   .features {
-    padding: var(--spacing-3xl) var(--spacing-md);
-    background-color: var(--color-bg);
+    padding: 0 var(--padding-horizontal-desktop);
+
   }
 
   .container {
     max-width: var(--max-width-content);
     margin: 0 auto;
+    border: 1px solid var(--color-border);
   }
 
   .features-header {
-    text-align: center;
-    margin-bottom: var(--spacing-3xl);
-    max-width: var(--max-width-text);
-    margin-left: auto;
-    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    height: 16rem;
   }
 
   .section-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-section-subtitle);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-tertiary);
+    margin: 0;
   }
 
   .section-description {
-    font-size: 1.125rem;
-    color: var(--color-text-secondary);
-    line-height: 1.7;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-section-title);
+    font-weight: 600;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-xl);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
   }
 
   .feature-card {
-    padding: var(--spacing-xl);
-    background-color: var(--color-bg-alt);
-    border-radius: var(--radius-lg);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--color-bg);
     border: 1px solid var(--color-border);
+    border-top: none;
     transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .feature-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: var(--spacing-md);
+  }
+
+  /* First column (1, 4, 7...) - remove left border */
+  .feature-card:nth-child(3n+1) {
+    border-left: none;
+  }
+
+  /* Third column (3, 6, 9...) - remove right border */
+  .feature-card:nth-child(3n) {
+    border-right: none;
+  }
+
+  /* Last row - remove bottom border */
+  .feature-card:nth-last-child(-n+3) {
+    border-bottom: none;
   }
 
   .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    border-color: var(--color-primary);
+    background-color: var(--color-bg-subtle);
+  }
+
+  .feature-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-top: auto;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .feature-image-clear,
+  .feature-image-dither {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.4s ease-in-out;
+  }
+
+  .feature-image-clear {
+    opacity: 0;
+  }
+
+  .feature-image-dither {
+    opacity: 1;
+  }
+
+  .feature-card:hover .feature-image-clear {
+    opacity: 1;
+  }
+
+  .feature-card:hover .feature-image-dither {
+    opacity: 0;
   }
 
   .feature-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: var(--spacing-md);
-    color: var(--color-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .feature-icon :global(svg) {
-    width: 100%;
-    height: 100%;
+    display: none;
   }
 
   .feature-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-feature-title);
+    font-weight: 500;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tighter);
+    color: var(--color-text-primary);
+    margin: 0;
   }
 
   .feature-description {
-    font-size: 1rem;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-feature-desc);
+    font-weight: 400;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-tighter);
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    margin: 0;
   }
 
-  @media (max-width: 768px) {
+  /* Tablet Responsive */
+  @media (max-width: 1279px) {
     .features {
-      padding: var(--spacing-2xl) var(--spacing-md);
+      padding: 0 var(--padding-horizontal-tablet);
     }
 
-    .section-title {
-      font-size: 2rem;
+    .features-header {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+
+    .feature-card {
+      padding: var(--spacing-md) var(--spacing-lg);
+    }
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 767px) {
+    .features {
+      padding: 0 var(--padding-horizontal-mobile);
+    }
+
+    .features-header {
+      padding: var(--spacing-md);
     }
 
     .features-grid {
       grid-template-columns: 1fr;
-      gap: var(--spacing-lg);
+    }
+
+    .feature-card {
+      padding: var(--spacing-md);
+      border-right: none;
+      border-left: none;
+    }
+
+    .feature-card:last-child {
+      border-bottom: none;
     }
   }
 </style>
