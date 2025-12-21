@@ -1,0 +1,204 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+---
+
+<Layout title="Blog - Neutree" description="Updates, notes, and articles from the Neutree team.">
+  <Header />
+
+  <main class="page">
+    <div class="container">
+      <header class="page-header">
+        <h1 class="title">Blog</h1>
+        <p class="subtitle">Product notes, architecture, and project updates.</p>
+      </header>
+
+      <section class="list" aria-label="Blog posts">
+        {posts.length === 0 ? (
+          <p class="empty">No posts yet.</p>
+        ) : (
+          <ul class="posts">
+            {posts.map((post) => (
+              <li class="post">
+                <a class="post-link" href={`/blog/${post.slug}`}>
+                  {post.data.coverImage ? (
+                    <div class="cover" aria-hidden="true">
+                      <img
+                        class="cover-img"
+                        src={post.data.coverImage}
+                        alt={post.data.coverAlt ?? post.data.title}
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : null}
+                  <div class="post-meta">
+                    <time datetime={post.data.pubDate.toISOString()}>
+                      {post.data.pubDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                      })}
+                    </time>
+                    {post.data.tags?.length ? (
+                      <span class="tags">
+                        {post.data.tags.slice(0, 3).map((t) => (
+                          <span class="tag">{t}</span>
+                        ))}
+                      </span>
+                    ) : null}
+                  </div>
+                  <h2 class="post-title">{post.data.title}</h2>
+                  {post.data.description ? (
+                    <p class="post-desc">{post.data.description}</p>
+                  ) : null}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .page {
+    padding: var(--spacing-5xl) var(--padding-horizontal-desktop);
+    background-color: var(--color-bg-subtle);
+  }
+
+  .container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+  }
+
+  .page-header {
+    padding: var(--spacing-xl) var(--spacing-xl);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--spacing-xl);
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .subtitle {
+    margin-top: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    max-width: var(--max-width-text);
+  }
+
+  .posts {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--spacing-md);
+  }
+
+  .post-link {
+    display: block;
+    padding: var(--spacing-xl);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .cover {
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: rgba(12, 40, 73, 0.03);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cover-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .post-link:hover {
+    background-color: var(--color-bg-subtle);
+    transform: translateY(-1px);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .tags {
+    display: inline-flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    padding: 2px 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+  }
+
+  .post-title {
+    font-size: 22px;
+    margin: 0;
+    letter-spacing: var(--letter-spacing-tight);
+  }
+
+  .post-desc {
+    margin-top: var(--spacing-sm);
+    margin-bottom: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .empty {
+    color: var(--color-text-secondary);
+    padding: var(--spacing-xl);
+  }
+
+  @media (max-width: 1279px) {
+    .page {
+      padding: var(--spacing-4xl) var(--padding-horizontal-tablet);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .page {
+      padding: var(--spacing-3xl) var(--padding-horizontal-mobile);
+    }
+
+    .page-header {
+      padding: var(--spacing-lg) var(--spacing-lg);
+    }
+
+    .title {
+      font-size: 30px;
+    }
+
+    .post-link {
+      padding: var(--spacing-lg);
+    }
+  }
+</style>

@@ -19,6 +19,7 @@
       </a>
 
       <nav class="nav">
+        <a href="/blog" class="nav-link">Blog</a>
         <a
           href="https://docs.neutree.ai"
           target="_blank"
@@ -59,7 +60,11 @@
     const logoText = header.querySelector('.logo-text');
     const heroBrand = document.querySelector('.hero-brand');
     
-    if (!logoText || !heroBrand) return;
+    if (!logoText) return;
+    if (!heroBrand) {
+      header.classList.add('logo-text-visible');
+      return;
+    }
 
     function checkScroll() {
       if (!header || !heroBrand) return;
