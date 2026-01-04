@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Pages
+name: Deploy to AWS (prod)
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      deployments: write
+      id-token: write
 
     steps:
       - name: Checkout repository
@@ -27,11 +27,18 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build site
+        env:
+          SITE: ${{ secrets.SITE_URL_PROD }}
         run: yarn build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=neutree-website
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN_PROD }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync to S3
+        run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_PROD }}/ --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID_PROD }} --paths '/*'
