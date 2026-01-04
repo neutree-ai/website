@@ -29,33 +29,27 @@ const description = post.data.description ?? "Neutree blog post";
           <div class="meta">
             <a class="back" href="/blog">← Back to Blog</a>
             <time datetime={post.data.pubDate.toISOString()}>
-              {post.data.pubDate.toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "2-digit",
-              })}
+              {
+                post.data.pubDate.toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "2-digit",
+                })
+              }
             </time>
           </div>
-          {post.data.coverImage ? (
-            <div class="cover">
-              <img
-                class="cover-img"
-                src={post.data.coverImage}
-                alt={post.data.coverAlt ?? post.data.title}
-              />
-            </div>
-          ) : null}
+          {
+            post.data.coverImage ? (
+              <div class="cover">
+                <img
+                  class="cover-img"
+                  src={post.data.coverImage}
+                  alt={post.data.coverAlt ?? post.data.title}
+                />
+              </div>
+            ) : null
+          }
           <h1 class="title">{post.data.title}</h1>
-          {post.data.description ? (
-            <p class="subtitle">{post.data.description}</p>
-          ) : null}
-          {post.data.tags?.length ? (
-            <div class="tags" aria-label="Tags">
-              {post.data.tags.map((t) => (
-                <span class="tag">{t}</span>
-              ))}
-            </div>
-          ) : null}
         </header>
 
         <div class="content">
