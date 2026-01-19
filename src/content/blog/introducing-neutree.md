@@ -35,6 +35,8 @@ It introduces a management layer for model inference, covering resource pooling,
 
 Rather than focusing on individual model deployments, Neutree treats models as managed services that can be shared, governed, and operated consistently across heterogeneous hardware.
 
+![Neutree Architecture](/images/arch.png)
+
 ## Why Private Matters
 
 The idea of running critical infrastructure in private environments is not new.

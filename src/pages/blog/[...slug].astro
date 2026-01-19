@@ -202,6 +202,14 @@ const description = post.data.description ?? "Neutree blog post";
     text-underline-offset: 2px;
   }
 
+  .content :global(img) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: auto 0;
+    border-radius: var(--radius-md);
+  }
+
   @media (max-width: 1279px) {
     .page {
       padding: var(--spacing-4xl) var(--padding-horizontal-tablet);
