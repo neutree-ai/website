@@ -9,25 +9,31 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 );
 ---
 
-<Layout title="Blog - Neutree" description="Updates, notes, and articles from the Neutree team.">
+<Layout
+  title="Blog - Neutree"
+  description="Updates, notes, and articles from the Neutree team."
+>
   <Header />
 
   <main class="page">
     <div class="container">
       <header class="page-header">
         <h1 class="title">Blog</h1>
-        <p class="subtitle">Product notes, architecture, and project updates.</p>
+        <p class="subtitle">
+          Product notes, architecture, and project updates.
+        </p>
       </header>
 
       <section class="list" aria-label="Blog posts">
-        {posts.length === 0 ? (
-          <p class="empty">No posts yet.</p>
-        ) : (
-          <ul class="posts">
-            {posts.map((post) => (
-              <li class="post">
-                <a class="post-link" href={`/blog/${post.slug}`}>
-                  {post.data.coverImage ? (
+        {
+          posts.length === 0 ? (
+            <p class="empty">No posts yet.</p>
+          ) : (
+            <ul class="posts">
+              {posts.map((post) => (
+                <li class="post">
+                  <a class="post-link" href={`/blog/${post.slug}`}>
+                    {/* {post.data.coverImage ? (
                     <div class="cover" aria-hidden="true">
                       <img
                         class="cover-img"
@@ -36,32 +42,33 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
                         loading="lazy"
                       />
                     </div>
-                  ) : null}
-                  <div class="post-meta">
-                    <time datetime={post.data.pubDate.toISOString()}>
-                      {post.data.pubDate.toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "2-digit",
-                      })}
-                    </time>
-                    {post.data.tags?.length ? (
-                      <span class="tags">
-                        {post.data.tags.slice(0, 3).map((t) => (
-                          <span class="tag">{t}</span>
-                        ))}
-                      </span>
+                  ) : null} */}
+                    <div class="post-meta">
+                      <time datetime={post.data.pubDate.toISOString()}>
+                        {post.data.pubDate.toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "short",
+                          day: "2-digit",
+                        })}
+                      </time>
+                      {post.data.tags?.length ? (
+                        <span class="tags">
+                          {post.data.tags.slice(0, 3).map((t) => (
+                            <span class="tag">{t}</span>
+                          ))}
+                        </span>
+                      ) : null}
+                    </div>
+                    <h2 class="post-title">{post.data.title}</h2>
+                    {post.data.description ? (
+                      <p class="post-desc">{post.data.description}</p>
                     ) : null}
-                  </div>
-                  <h2 class="post-title">{post.data.title}</h2>
-                  {post.data.description ? (
-                    <p class="post-desc">{post.data.description}</p>
-                  ) : null}
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
       </section>
     </div>
   </main>
@@ -114,7 +121,9 @@ const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
     background: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .cover {
