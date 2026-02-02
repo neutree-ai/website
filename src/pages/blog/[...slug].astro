@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
 
 const title = `${post.data.title} - Neutree Blog`;
 const description = post.data.description ?? "Neutree blog post";
@@ -23,7 +23,7 @@ const description = post.data.description ?? "Neutree blog post";
   <Header />
 
   <main class="page">
-    <div class="container">
+    <div class="layout">
       <article class="article">
         <header class="article-header">
           <div class="meta">
@@ -39,6 +39,7 @@ const description = post.data.description ?? "Neutree blog post";
             </time>
           </div>
           {
+            /* {
             post.data.coverImage ? (
               <div class="cover">
                 <img
@@ -48,6 +49,7 @@ const description = post.data.description ?? "Neutree blog post";
                 />
               </div>
             ) : null
+          } */
           }
           <h1 class="title">{post.data.title}</h1>
         </header>
@@ -56,8 +58,31 @@ const description = post.data.description ?? "Neutree blog post";
           <Content />
         </div>
       </article>
+
+      {
+        headings.length > 0 && (
+          <aside class="toc-sidebar">
+            <nav class="toc">
+              <h4 class="toc-title">On this page</h4>
+              <ul class="toc-list">
+                {headings.map((heading) => (
+                  <li class={`toc-item toc-item-${heading.depth}`}>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </aside>
+        )
+      }
     </div>
   </main>
+
+  <!-- Image Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close">&times;</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="" />
+  </div>
 
   <Footer />
 </Layout>
@@ -68,9 +93,13 @@ const description = post.data.description ?? "Neutree blog post";
     background-color: var(--color-bg-subtle);
   }
 
-  .container {
-    max-width: var(--max-width-content);
+  .layout {
+    max-width: calc(var(--max-width-content) + 280px);
     margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--spacing-2xl);
+    align-items: start;
   }
 
   .article {
@@ -203,11 +232,17 @@ const description = post.data.description ?? "Neutree blog post";
   }
 
   .content :global(img) {
-    max-width: 100%;
+    max-width: min(100%, 600px);
     height: auto;
     display: block;
-    margin: auto 0;
+    margin: 16px auto;
     border-radius: var(--radius-md);
+    cursor: zoom-in;
+    transition: opacity 0.2s;
+  }
+
+  .content :global(img:hover) {
+    opacity: 0.9;
   }
 
   @media (max-width: 1279px) {
@@ -242,4 +277,171 @@ const description = post.data.description ?? "Neutree blog post";
       font-size: 30px;
     }
   }
+
+  /* TOC Sidebar */
+  .toc-sidebar {
+    position: sticky;
+    top: 100px;
+  }
+
+  .toc {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+  }
+
+  .toc-title {
+    margin: 0 0 var(--spacing-md) 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .toc-item {
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .toc-item a {
+    display: block;
+    padding: 6px 0;
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .toc-item a:hover {
+    color: var(--color-text-primary);
+  }
+
+  .toc-item-3 {
+    padding-left: 12px;
+  }
+
+  .toc-item-4 {
+    padding-left: 24px;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    pointer-events: none;
+    opacity: 0;
+    transition:
+      background 0.3s,
+      opacity 0.3s;
+  }
+
+  .lightbox.active {
+    background: rgba(0, 0, 0, 0.9);
+    pointer-events: auto;
+    opacity: 1;
+  }
+
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    transform: scale(0.9);
+    opacity: 0;
+    transition:
+      transform 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  .lightbox.active .lightbox-img {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+
+  .lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  @media (max-width: 1279px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .toc-sidebar {
+      display: none;
+    }
+  }
 </style>
+
+<script>
+  // Image Lightbox
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById(
+    "lightbox-img",
+  ) as HTMLImageElement;
+  const lightboxClose = document.getElementById("lightbox-close");
+  const contentImages = document.querySelectorAll(".content img");
+
+  contentImages.forEach((img) => {
+    img.addEventListener("click", () => {
+      if (lightbox && lightboxImg) {
+        lightboxImg.src = (img as HTMLImageElement).src;
+        lightboxImg.alt = (img as HTMLImageElement).alt;
+        lightbox.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+    });
+  });
+
+  const closeLightbox = () => {
+    if (lightbox) {
+      lightbox.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  };
+
+  lightboxClose?.addEventListener("click", closeLightbox);
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeLightbox();
+    }
+  });
+</script>
