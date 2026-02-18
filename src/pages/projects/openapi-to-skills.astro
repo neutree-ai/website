@@ -1,0 +1,2119 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+
+const title = "openapi-to-skills — Neutree";
+const description =
+  "Convert OpenAPI specs into focused, executable skill units for AI agents. Smaller context, zero glue code, higher accuracy.";
+
+const specYaml = `openapi: 3.0.3
+info:
+  title: GitHub REST API
+  version: 1.1.4
+  description: |
+    GitHub's v3 REST API for managing
+    repositories, issues, pull requests,
+    and more.
+servers:
+  - url: https://api.github.com
+    description: Production
+paths:
+  /repos/{owner}/{repo}/issues:
+    get:
+      tags:
+        - Issues
+      summary: List repository issues
+      operationId: issues/list-for-repo
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum: [open, closed, all]
+            default: open
+        - name: labels
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [created, updated, comments]
+        - name: direction
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/issue'
+    post:
+      tags:
+        - Issues
+      summary: Create an issue
+      operationId: issues/create
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                assignees:
+                  type: array
+                  items:
+                    type: string
+                milestone:
+                  type: integer
+                labels:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+  /repos/{owner}/{repo}/issues/{issue_number}:
+    get:
+      tags:
+        - Issues
+      summary: Get an issue
+      operationId: issues/get
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/issue'
+    patch:
+      tags:
+        - Issues
+      summary: Update an issue
+      operationId: issues/update
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: issue_number
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                body:
+                  type: string
+                state:
+                  type: string
+                  enum: [open, closed]
+                labels:
+                  type: array
+                  items:
+                    type: string
+                assignees:
+                  type: array
+                  items:
+                    type: string
+  /repos/{owner}/{repo}/pulls:
+    get:
+      tags:
+        - Pulls
+      summary: List pull requests
+      operationId: pulls/list
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum: [open, closed, all]
+        - name: head
+          in: query
+          schema:
+            type: string
+        - name: base
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - Pulls
+      summary: Create a pull request
+      operationId: pulls/create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, head, base]
+              properties:
+                title:
+                  type: string
+                head:
+                  type: string
+                base:
+                  type: string
+                body:
+                  type: string
+                draft:
+                  type: boolean
+  /search/issues:
+    get:
+      tags:
+        - Search
+      summary: Search issues and pull requests
+      operationId: search/issues-and-pull-requests
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: sort
+          in: query
+          schema:
+            type: string
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+  /repos/{owner}/{repo}:
+    get:
+      tags:
+        - Repos
+      summary: Get a repository
+      operationId: repos/get
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    issue:
+      type: object
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        title:
+          type: string
+        state:
+          type: string
+          enum: [open, closed]
+        body:
+          type: string
+        html_url:
+          type: string
+        user:
+          $ref: '#/components/
+            schemas/simple-user'
+        labels:
+          type: array
+          items:
+            $ref: '#/components/
+              schemas/label'
+        assignees:
+          type: array
+          items:
+            $ref: '#/components/
+              schemas/simple-user'
+        milestone:
+          $ref: '#/components/
+            schemas/milestone'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        closed_at:
+          type: string
+          format: date-time
+    simple-user:
+      type: object
+      properties:
+        login:
+          type: string
+        id:
+          type: integer
+        avatar_url:
+          type: string
+        html_url:
+          type: string
+    label:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+    milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        title:
+          type: string
+        state:
+          type: string`;
+
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main>
+    <!-- ════════ HERO ════════ -->
+    <section class="hero">
+      <div class="hero-inner">
+        <h1 class="hero-title reveal">
+          A Better Way to Prepare APIs for Agents
+        </h1>
+        <p class="hero-sub reveal" data-delay="1">
+          Turn
+          <span class="sub-slot-wrap">
+          <span class="sub-slot-brace">&#123;</span><span class="sub-slot" aria-label="your">
+            <span class="sub-slot-track">
+              <span class="sub-slot-item sub-slot-text">your</span>
+              <span class="sub-slot-item sub-slot-logo" aria-label="GitHub">
+                <img src="/icons/github.svg" width="18" height="18" alt="GitHub" />
+              </span>
+              <span class="sub-slot-item sub-slot-logo" aria-label="Stripe">
+                <img src="/icons/stripe.svg" width="18" height="18" alt="Stripe" />
+              </span>
+              <span class="sub-slot-item sub-slot-logo" aria-label="Slack">
+                <img src="/icons/slack.svg" width="18" height="18" alt="Slack" />
+              </span>
+              <span class="sub-slot-item sub-slot-logo" aria-label="Discord">
+                <img src="/icons/discord.svg" width="18" height="18" alt="Discord" />
+              </span>
+              <span class="sub-slot-item sub-slot-logo" aria-label="Figma">
+                <img src="/icons/figma.svg" width="18" height="18" alt="Figma" />
+              </span>
+            </span>
+          </span><span class="sub-slot-brace">&#125;</span>
+          </span>
+          OpenAPI specs into efficient, customizable skills for reliable agent actions.
+        </p>
+        <div class="hero-actions reveal" data-delay="2">
+          <a href="#quickstart" class="btn-solid">Get started</a>
+          <a
+            href="https://github.com/neutree-ai/openapi-to-skills"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-ghost"
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            neutree/openapi-to-skills
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ SCENE ════════ -->
+    <section class="scene">
+      <p class="scene-text reveal">
+        When an AI agent needs to act in the real world, it calls an API. The question isn't whether — it's how to give it the right context.
+      </p>
+      <div class="scene-scroll-hint reveal" data-delay="1">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 4v12M5 11l5 5 5-5"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ════════ PROBLEMS ════════ -->
+    <section class="problems">
+      <div class="problems-inner">
+        <div class="problems-header reveal">
+          <span class="section-label">The friction</span>
+          <h2 class="section-heading">Current approaches hit a wall</h2>
+        </div>
+
+        <div class="problem-grid">
+          <article class="problem-card reveal">
+            <h3 class="problem-title">MCP Servers</h3>
+            <p class="problem-desc">
+              Write adapter code. Spin up a sidecar process. Manage another
+              runtime. For each API, the integration tax is steep — and you
+              haven't written any business logic yet.
+            </p>
+          </article>
+
+          <article class="problem-card reveal" data-delay="1">
+            <h3 class="problem-title">Full Spec in Prompt</h3>
+            <p class="problem-desc">
+              Paste the entire Swagger file into the prompt. Thousands of tokens
+              consumed. The agent sees everything, focuses on nothing. Accuracy
+              drops as the spec grows.
+            </p>
+          </article>
+        </div>
+
+        <div class="problem-diy reveal">
+          <div class="diy-marker" aria-hidden="true">
+            <span class="diy-line"></span>
+            <span class="diy-dot"></span>
+          </div>
+          <div class="diy-content">
+            <h3 class="diy-title">So teams build their own</h3>
+            <p class="diy-desc">
+              It's a reasonable instinct — slice the spec, curate the context,
+              write a script to automate it. It works for a while. But as APIs
+              evolve and more teams need it, the maintenance cost compounds and
+              the solution rarely travels well.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ SOLUTION ════════ -->
+    <section class="solution">
+      <div class="solution-inner">
+        <div class="solution-header reveal">
+          <span class="section-label">The solution</span>
+          <h2 class="section-heading">openapi-to-skills</h2>
+          <p class="solution-lead">
+            Converts OpenAPI specifications into focused, executable skill
+            units&hairsp;—&hairsp;shrinking context, eliminating glue code, and
+            improving accuracy.
+          </p>
+        </div>
+
+        <!-- Transform Visual -->
+        <div class="transform reveal" data-delay="1">
+          <div class="transform-grid">
+            <div class="codewin codewin--spec">
+              <div class="codewin-chrome">
+                <span class="codewin-name">github-rest-api.yaml</span>
+                <span class="codewin-badge codewin-badge--warn">11 MB · 1,078 ops</span>
+              </div>
+              <div class="codewin-body codewin-body--scroll">
+                <div class="scroll-track">
+                  <pre class="codewin-pre">{specYaml}</pre>
+                  <pre class="codewin-pre" aria-hidden="true">{specYaml}</pre>
+                </div>
+              </div>
+            </div>
+
+            <div class="transform-arrow">
+              <svg
+                class="arrow-svg"
+                width="48"
+                height="48"
+                viewBox="0 0 48 48"
+                fill="none"
+              >
+                <circle
+                  cx="24"
+                  cy="24"
+                  r="23"
+                  stroke="currentColor"
+                  stroke-opacity="0.15"
+                  stroke-width="1"></circle>
+                <path
+                  d="M16 24h16m0 0l-6-6m6 6l-6 6"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"></path>
+              </svg>
+            </div>
+
+            <div class="codewin codewin--skill">
+              <div class="codewin-chrome">
+                <span class="codewin-chrome-spacer"></span>
+                <span class="codewin-badge codewin-badge--ok">2,026 files</span>
+              </div>
+              <div class="codewin-split">
+                <!-- File tree pane -->
+                <div class="split-tree">
+                  <div class="ft">
+                    <div class="ft-row">
+                      <span class="ft-sym">▾</span>
+                      <span class="ft-dir">github-v3-rest-api/</span>
+                    </div>
+                    <div class="ft-row ft-i1">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">SKILL.md</span>
+                    </div>
+                    <div class="ft-row ft-i1">
+                      <span class="ft-sym">└──</span>
+                      <span class="ft-sym">▾</span>
+                      <span class="ft-dir">references/</span>
+                    </div>
+                    <div class="ft-row ft-i2">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">authentication.md</span>
+                    </div>
+                    <div class="ft-row ft-i2">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-dir">resources/</span>
+                      <span class="ft-count">43</span>
+                    </div>
+                    <div class="ft-row ft-i2">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-dir">schemas/</span>
+                      <span class="ft-count">904</span>
+                    </div>
+                    <div class="ft-row ft-i2">
+                      <span class="ft-sym">└──</span>
+                      <span class="ft-sym">▾</span>
+                      <span class="ft-dir">operations/</span>
+                      <span class="ft-count">1,078</span>
+                    </div>
+                    <div class="ft-row ft-i3">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">gists-create.md</span>
+                    </div>
+                    <div class="ft-row ft-i3 ft-active">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">issues-create.md</span>
+                    </div>
+                    <div class="ft-row ft-i3">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">issues-get.md</span>
+                    </div>
+                    <div class="ft-row ft-i3">
+                      <span class="ft-sym">├──</span>
+                      <span class="ft-file">issues-list.md</span>
+                    </div>
+                    <div class="ft-row ft-i3">
+                      <span class="ft-sym">└──</span>
+                      <span class="ft-muted">1,074 more…</span>
+                    </div>
+                  </div>
+                </div>
+                <!-- Content pane -->
+                <div class="split-content">
+                  <div class="skill-doc">
+                    <div class="sk-endpoint">
+                      <span class="sk-verb">POST</span>
+                      <span class="sk-path">/repos/&#123;owner&#125;/&#123;repo&#125;/issues</span>
+                    </div>
+                    <div class="sk-prop-grid">
+                      <span class="sk-prop-key">Resource</span>
+                      <span class="sk-prop-link">issues</span>
+                      <span class="sk-prop-key">Operation ID</span>
+                      <code class="sk-prop-code">issues/create</code>
+                    </div>
+                    <h2 class="sk-h2">Create an issue</h2>
+                    <p class="sk-body">Any user with pull access to a repository can create an issue. If issues are disabled, the response will be a <code class="sk-inline-code">410 Gone</code> status.</p>
+                    <h3 class="sk-h3">Request Body</h3>
+                    <div class="sk-prop-grid">
+                      <span class="sk-prop-key">Required</span>
+                      <span class="sk-prop-val">Yes</span>
+                      <span class="sk-prop-key">Content Type</span>
+                      <code class="sk-prop-code">application/json</code>
+                    </div>
+                    <h3 class="sk-h3">Responses</h3>
+                    <div class="sk-resp-list">
+                      <div class="sk-resp sk-resp--ok">
+                        <span class="sk-status">201</span>
+                        <span class="sk-resp-desc">Response</span>
+                      </div>
+                      <div class="sk-resp">
+                        <span class="sk-status">403</span>
+                        <span class="sk-resp-desc">Forbidden</span>
+                      </div>
+                      <div class="sk-resp">
+                        <span class="sk-status">404</span>
+                        <span class="sk-resp-desc">Not Found</span>
+                      </div>
+                      <div class="sk-resp">
+                        <span class="sk-status">422</span>
+                        <span class="sk-resp-desc">Validation failed</span>
+                      </div>
+                    </div>
+                    <p class="sk-schema-ref">
+                      <span class="sk-prop-key">Success Schema</span>
+                      <span class="sk-prop-link">issue</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefits -->
+        <div class="benefits">
+          <div class="benefit reveal">
+            <span class="benefit-num">01</span>
+            <h3 class="benefit-title">Precise Context</h3>
+            <p class="benefit-desc">
+              Only the relevant operation, parameters, and schemas. The context
+              window stays lean — agents see exactly what they need.
+            </p>
+          </div>
+          <div class="benefit reveal" data-delay="1">
+            <span class="benefit-num">02</span>
+            <h3 class="benefit-title">Zero Glue Code</h3>
+            <p class="benefit-desc">
+              No adapters. No sidecar processes. No extra runtime to manage.
+              Generate once, use everywhere.
+            </p>
+          </div>
+          <div class="benefit reveal" data-delay="2">
+            <span class="benefit-num">03</span>
+            <h3 class="benefit-title">Always in Sync</h3>
+            <p class="benefit-desc">
+              API spec updated? Re-run the tool. Skills reflect the latest
+              endpoints without manual edits or drift.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ QUICK START ════════ -->
+    <section class="quickstart" id="quickstart">
+      <div class="quickstart-inner">
+        <div class="quickstart-header reveal">
+          <span class="section-label">Get started</span>
+          <h2 class="section-heading">One command</h2>
+        </div>
+
+        <div class="qs-cmd reveal" data-delay="1">
+          <pre class="qs-cmd-pre"><span class="t-prompt">$</span> npx openapi-to-skills generate --input your-api.yaml --output ./skills</pre>
+          <button class="qs-copy" aria-label="Copy command" data-copy="npx openapi-to-skills generate --input your-api.yaml --output ./skills">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span class="qs-copy-label">Copy</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ DEEP CONTROL ════════ -->
+    <section class="control">
+      <div class="control-inner">
+        <div class="control-header reveal">
+          <span class="section-label">Advanced</span>
+          <h2 class="section-heading">Go further</h2>
+          <p class="control-lead">
+            Filter by tags or paths, override output templates, or embed the
+            converter directly into your build pipeline.
+          </p>
+        </div>
+
+        <div class="control-grid">
+          <div class="control-card reveal">
+            <h3 class="control-card-title">Filter</h3>
+            <p class="control-card-desc">
+              Include or exclude by tags, paths, or deprecated status.
+            </p>
+            <div class="feat-filter">
+              <div class="ff-flag-row">
+                <span class="ff-flag">--include-tags</span>
+                <div class="ff-pills">
+                  <span class="ff-pill ff-pill--in">users</span>
+                  <span class="ff-pill ff-pill--in">repos</span>
+                  <span class="ff-pill ff-pill--in">issues</span>
+                </div>
+              </div>
+              <div class="ff-flag-row">
+                <span class="ff-flag">--exclude-paths</span>
+                <div class="ff-pills">
+                  <span class="ff-pill ff-pill--out">/internal</span>
+                </div>
+              </div>
+              <div class="ff-flag-row">
+                <span class="ff-flag">--exclude-deprecated</span>
+                <div class="ff-pills">
+                  <span class="ff-pill ff-pill--out">on</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-card reveal" data-delay="1">
+            <h3 class="control-card-title">Custom Templates</h3>
+            <p class="control-card-desc">
+              Override Eta templates to control exactly what each skill file contains.
+            </p>
+            <div class="feat-tpl">
+              <div class="feat-tpl-chrome">
+                <span class="feat-tpl-filename">issues-create.md</span>
+              </div>
+              <div class="feat-tpl-diff">
+                <div class="diff-line diff-base"> # POST /repos/&#123;owner&#125;/&#123;repo&#125;/issues</div>
+                <div class="diff-line diff-base"> </div>
+                <div class="diff-line diff-base"> **Create an issue**</div>
+                <div class="diff-line diff-base"> </div>
+                <div class="diff-line diff-base"> Any user with pull access can create an issue.</div>
+                <div class="diff-line diff-base"> </div>
+                <div class="diff-line diff-add">+**Internal:** Use <span class="diff-hl">PROJECT-123</span> key format.</div>
+                <div class="diff-line diff-add">+See runbook: /wiki/github-integration</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-card reveal" data-delay="2">
+            <h3 class="control-card-title">Programmatic API</h3>
+            <p class="control-card-desc">
+              Embed into build pipelines or custom tooling directly.
+            </p>
+            <div class="codewin codewin--sm">
+              <div class="codewin-chrome">
+                <span class="codewin-name">build.ts</span>
+              </div>
+              <div class="codewin-body">
+                <pre class="codewin-pre">import &#123; convertOpenAPIToSkill &#125;
+  from 'openapi-to-skills';
+
+await convertOpenAPIToSkill(spec, &#123;
+  outputDir: './skills',
+  parser: &#123;
+    filter: &#123;
+      includeTags: ['users', 'repos'],
+      excludeDeprecated: true,
+    &#125;,
+  &#125;,
+&#125;);</pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ CTA ════════ -->
+    <section class="cta">
+      <div class="cta-inner reveal">
+        <p class="cta-byline">Open source · Apache 2.0 · Contributions welcome</p>
+        <a
+          href="https://github.com/neutree-ai/openapi-to-skills"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-ghost"
+        >
+          View on GitHub
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><path d="M3 13L13 3M13 3H5M13 3v8"></path></svg
+          >
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    /* ── Copy button ── */
+    document.querySelectorAll(".qs-copy").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(btn.dataset.copy ?? "").then(() => {
+          const label = btn.querySelector(".qs-copy-label");
+          btn.classList.add("qs-copy--ok");
+          if (label) label.textContent = "Copied!";
+          setTimeout(() => {
+            btn.classList.remove("qs-copy--ok");
+            if (label) label.textContent = "Copy";
+          }, 2000);
+        });
+      });
+    });
+
+    /* ── Hero slot rotation ── */
+    const track = document.querySelector<HTMLElement>(".sub-slot-track");
+    if (track) {
+      const items = track.querySelectorAll(".sub-slot-item");
+      const count = items.length;
+      // Clone first item to the end for seamless loop
+      track.appendChild(items[0].cloneNode(true));
+      let current = 0;
+      setInterval(() => {
+        current++;
+        track.style.transition = "transform 0.45s cubic-bezier(0.4, 0, 0.2, 1)";
+        track.style.transform = `translateY(calc(-${current} * 1.5em))`;
+        // After reaching the clone, silently reset to real item 0
+        if (current === count) {
+          setTimeout(() => {
+            track.style.transition = "none";
+            track.style.transform = "translateY(0)";
+            current = 0;
+          }, 480);
+        }
+      }, 2200);
+    }
+
+    /* ── Scroll Reveal ── */
+    const reveals = document.querySelectorAll(".reveal");
+    const revealObs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("revealed");
+            revealObs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: "0px 0px -32px 0px" }
+    );
+    reveals.forEach((el) => revealObs.observe(el));
+
+  });
+</script>
+
+<style>
+  /* ══════════════════════════════════
+     BASE & LAYOUT
+     ══════════════════════════════════ */
+  main {
+    --section-gap: 120px;
+    --inner-max: 1120px;
+    --pad-x: var(--padding-horizontal-desktop);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+  }
+
+  .section-heading {
+    font-family: var(--font-sans);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  /* ── Shared button styles ── */
+  .btn-solid,
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--font-size-button);
+    line-height: var(--line-height-tight);
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .btn-solid {
+    background: var(--color-text-primary);
+    color: var(--color-bg);
+    box-shadow: var(--shadow-button-primary);
+  }
+  .btn-solid:hover {
+    background: rgba(12, 40, 73, 0.88);
+    transform: translateY(-2px);
+    color: var(--color-bg);
+  }
+
+  .btn-ghost {
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+    border-color: var(--color-border-strong);
+    box-shadow: var(--shadow-button-outlined);
+  }
+  .btn-ghost:hover {
+    background: rgba(12, 40, 73, 0.04);
+    transform: translateY(-2px);
+    color: var(--color-text-primary);
+  }
+  .btn-ghost svg {
+    flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════════
+     HERO
+     ══════════════════════════════════ */
+  .hero {
+    padding: 72px var(--pad-x) var(--section-gap);
+  }
+
+  .hero-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.01em;
+  }
+
+  .hero-title {
+    font-family: var(--font-sans);
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .hero-sub {
+    font-family: var(--font-sans);
+    font-size: clamp(17px, 2vw, 22px);
+    line-height: 1.4;
+    color: var(--color-text-secondary);
+    margin: 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    flex-wrap: nowrap;
+  }
+
+  .sub-slot {
+    display: inline-block;
+    overflow: hidden;
+    height: 1.5em;
+  }
+
+  .sub-slot-track {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    will-change: transform;
+  }
+
+  .sub-slot-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 1.5em;
+    min-width: 2.8em;
+    flex-shrink: 0;
+  }
+
+  .sub-slot-text {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: -0.01em;
+    padding: 0 0.15em;
+  }
+
+  .sub-slot-logo {
+    padding: 0 0.25em;
+  }
+
+  .sub-slot-logo svg {
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .sub-slot-wrap {
+    display: inline-flex;
+    align-items: center;
+    background: #0d1b2e;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 7px;
+    padding: 0.08em 0.2em;
+    gap: 0.05em;
+    vertical-align: middle;
+    position: relative;
+    top: -0.05em;
+  }
+
+  .sub-slot-brace {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: rgba(255, 255, 255, 0.3);
+    line-height: 1;
+    user-select: none;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  .hero-npm-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .hero-npm-badge:hover {
+    color: var(--color-text-primary);
+  }
+  .hero-npm-badge svg {
+    color: #cb3837;
+    flex-shrink: 0;
+  }
+
+  /* ══════════════════════════════════
+     SCENE
+     ══════════════════════════════════ */
+  .scene {
+    padding: 0 var(--pad-x) var(--section-gap);
+  }
+
+  .scene-text {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+    color: var(--color-text-secondary);
+  }
+  .scene-text em {
+    font-style: italic;
+    color: var(--color-text-primary);
+  }
+  .scene-scroll-hint {
+    display: flex;
+    justify-content: center;
+    margin-top: 32px;
+    color: var(--color-text-tertiary);
+    animation: scroll-hint-bounce 2s ease-in-out infinite;
+  }
+  @keyframes scroll-hint-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.4; }
+    50% { transform: translateY(5px); opacity: 0.8; }
+  }
+
+  /* ══════════════════════════════════
+     PROBLEMS
+     ══════════════════════════════════ */
+  .problems {
+    padding: 0 var(--pad-x) var(--section-gap);
+    background-image: radial-gradient(
+      circle,
+      rgba(12, 40, 73, 0.035) 1px,
+      transparent 1px
+    );
+    background-size: 20px 20px;
+  }
+
+  .problems-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .problems-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .problem-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .problem-card {
+    background: rgba(150, 30, 30, 0.018);
+    border: 1px solid var(--color-border);
+    border-left: 2px solid rgba(150, 30, 30, 0.35);
+    border-radius: 2px;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .problem-title {
+    font-family: var(--font-sans);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .problem-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* DIY follow-up */
+  .problem-diy {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding: 0 4px;
+  }
+
+  .diy-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding-top: 6px;
+    flex-shrink: 0;
+  }
+  .diy-line {
+    width: 1px;
+    height: 24px;
+    background: rgba(12, 40, 73, 0.15);
+  }
+  .diy-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(12, 40, 73, 0.25);
+    background: var(--color-bg);
+    flex-shrink: 0;
+  }
+
+  .diy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .diy-title {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+  .diy-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+    max-width: 60ch;
+  }
+
+  /* ══════════════════════════════════
+     SOLUTION
+     ══════════════════════════════════ */
+  .solution {
+    padding: 0 var(--pad-x) var(--section-gap);
+  }
+
+  .solution-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .solution-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 600px;
+  }
+
+  .solution-lead {
+    font-family: var(--font-sans);
+    font-size: clamp(16px, 1.6vw, 19px);
+    line-height: 1.55;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* ── Transform Visual ── */
+  .transform-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 2fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .transform-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-tertiary);
+    padding-top: 12px;
+  }
+  .arrow-svg {
+    animation: arrow-pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes arrow-pulse {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  /* ── Code Windows ── */
+  .codewin {
+    display: flex;
+    flex-direction: column;
+    height: 380px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #0d1b2e;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.08),
+      0 12px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .codewin-chrome {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .codewin-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+    flex: 1;
+  }
+
+  .codewin-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .codewin-badge--ok {
+    background: rgba(134, 239, 172, 0.1);
+    color: rgba(134, 239, 172, 0.7);
+  }
+  .codewin-badge--warn {
+    background: rgba(220, 80, 60, 0.12);
+    color: rgba(220, 120, 100, 0.9);
+  }
+  .codewin-chrome-spacer {
+    flex: 1;
+  }
+
+  .codewin-body {
+    padding: 16px 20px;
+  }
+
+  .codewin-pre {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #c9d1d9;
+    margin: 0;
+    white-space: pre;
+  }
+
+  /* Scrolling spec */
+  .codewin-body--scroll {
+    flex: 1;
+    overflow: hidden;
+    padding: 0;
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 12%,
+      black 88%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 12%,
+      black 88%,
+      transparent 100%
+    );
+  }
+  .codewin-body--scroll .codewin-pre {
+    padding: 16px 20px;
+  }
+
+  .scroll-track {
+    animation: code-scroll 50s linear infinite;
+  }
+  .scroll-track:hover {
+    animation-play-state: paused;
+  }
+  @keyframes code-scroll {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-50%);
+    }
+  }
+
+  /* Terminal variant */
+  .codewin--term .codewin-chrome {
+    background: rgba(255, 255, 255, 0.02);
+  }
+  .t-prompt {
+    color: rgba(134, 239, 172, 0.7);
+    user-select: none;
+  }
+  .t-dim {
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .t-ok {
+    color: rgba(134, 239, 172, 0.8);
+  }
+
+  /* Smaller code windows for control section */
+  .codewin--sm .codewin-body {
+    padding: 14px 16px;
+  }
+  .codewin--sm .codewin-pre {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  /* ── VS Code Split Pane ── */
+  .codewin-tabbar {
+    display: flex;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .codewin-tab {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.45);
+    padding: 5px 14px;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    white-space: nowrap;
+  }
+  .codewin-tab--active {
+    color: rgba(255, 255, 255, 0.85);
+    border-bottom: 1.5px solid rgba(134, 239, 172, 0.6);
+    margin-bottom: -1px;
+  }
+  .codewin-split {
+    display: flex;
+    flex: 1;
+  }
+  .split-tree {
+    flex: 1;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 0;
+    overflow: hidden;
+  }
+  .split-content {
+    flex: 2;
+    overflow-y: auto;
+    padding: 14px 16px;
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  /* Skill doc content */
+  .skill-doc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sk-endpoint {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sk-verb {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: rgba(134, 239, 172, 0.9);
+    background: rgba(134, 239, 172, 0.08);
+    border: 1px solid rgba(134, 239, 172, 0.2);
+    border-radius: 3px;
+    padding: 1px 6px;
+    flex-shrink: 0;
+  }
+  .sk-path {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: #e6edf3;
+    font-weight: 500;
+  }
+  .sk-prop-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 10px;
+    padding: 7px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .sk-prop-key {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.38);
+    white-space: nowrap;
+  }
+  .sk-prop-val {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .sk-prop-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(147, 197, 253, 0.8);
+  }
+  .sk-prop-code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(253, 224, 71, 0.8);
+  }
+  .sk-h2 {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    color: #e6edf3;
+    margin: 0;
+  }
+  .sk-h3 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .sk-body {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .sk-inline-code {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(253, 224, 71, 0.8);
+    background: rgba(253, 224, 71, 0.06);
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+  .sk-resp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .sk-resp {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sk-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.45);
+    min-width: 32px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .sk-resp--ok .sk-status {
+    background: rgba(134, 239, 172, 0.1);
+    color: rgba(134, 239, 172, 0.85);
+  }
+  .sk-resp-desc {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .sk-schema-ref {
+    font-size: 11px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ── File Tree ── */
+  .codewin-body--tree {
+    padding: 10px 0;
+  }
+
+  .ft {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+
+  .ft-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 20px;
+    white-space: nowrap;
+  }
+  .ft-i1 { padding-left: 36px; }
+  .ft-i2 { padding-left: 52px; }
+  .ft-i3 { padding-left: 68px; }
+
+  .ft-active {
+    background: rgba(134, 239, 172, 0.1);
+    border-left: 2px solid rgba(134, 239, 172, 0.45);
+    padding-left: 66px;
+  }
+  .ft-active .ft-file {
+    color: rgba(134, 239, 172, 0.9);
+  }
+
+  .ft-sym {
+    color: rgba(255, 255, 255, 0.2);
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .ft-dir {
+    color: rgba(147, 197, 253, 0.85);
+  }
+  .ft-file {
+    color: #c9d1d9;
+  }
+  .ft-count {
+    margin-left: auto;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 11px;
+    padding-right: 4px;
+  }
+  .ft-muted {
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  /* ── Benefits ── */
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+  }
+
+  .benefit {
+    background: var(--color-bg);
+    border-left: 2px solid rgba(30, 120, 60, 0.35);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .benefit-num {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+
+  .benefit-title {
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .benefit-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════
+     QUICK START
+     ══════════════════════════════════ */
+  .quickstart {
+    padding: 0 var(--pad-x) var(--section-gap);
+    scroll-margin-top: 72px;
+  }
+
+  .quickstart-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .quickstart-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .qs-cmd {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #0d1b2e;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+  }
+
+  .qs-cmd-pre {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    color: #c9d1d9;
+    margin: 0;
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  .qs-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 5px 10px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.75);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .qs-copy:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .qs-copy--ok {
+    color: rgba(134, 239, 172, 0.8);
+    border-color: rgba(134, 239, 172, 0.3);
+  }
+
+  .step-labels {
+    display: flex;
+    gap: 32px;
+  }
+
+  .step-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .step-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-border-strong);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .term-pre {
+    color: rgba(201, 209, 217, 0.9);
+  }
+
+  /* ══════════════════════════════════
+     DEEP CONTROL
+     ══════════════════════════════════ */
+  .control {
+    padding: 0 var(--pad-x) var(--section-gap);
+  }
+
+  .control-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+
+  .control-header {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 520px;
+  }
+
+  .control-lead {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .control-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .control-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .control-card-title {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  .control-card-desc {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════
+     CTA
+     ══════════════════════════════════ */
+  /* ── Filter visual ── */
+  .feat-filter {
+    background: #0d1b2e;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 14px;
+    font-family: var(--font-mono);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ff-flag-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .ff-flag {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.02em;
+  }
+  .ff-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .ff-pill {
+    font-size: 11.5px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    border: 1px solid;
+  }
+  .ff-pill--in {
+    color: rgba(134, 239, 172, 0.85);
+    background: rgba(134, 239, 172, 0.08);
+    border-color: rgba(134, 239, 172, 0.2);
+  }
+  .ff-pill--out {
+    color: rgba(220, 100, 80, 0.75);
+    background: rgba(220, 80, 60, 0.07);
+    border-color: rgba(220, 80, 60, 0.2);
+  }
+
+  /* ── Template diff visual ── */
+  .feat-tpl {
+    background: #0d1b2e;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    font-family: var(--font-mono);
+  }
+  .feat-tpl-chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .feat-tpl-filename {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .feat-tpl-diff {
+    padding: 10px 0;
+  }
+  .diff-line {
+    font-size: 12px;
+    line-height: 1.75;
+    padding: 0 14px;
+    white-space: pre;
+  }
+  .diff-base {
+    color: rgba(255, 255, 255, 0.45);
+  }
+  .diff-add {
+    color: rgba(134, 239, 172, 0.9);
+    background: rgba(134, 239, 172, 0.06);
+    border-left: 2px solid rgba(134, 239, 172, 0.4);
+    padding-left: 12px;
+  }
+  .diff-hl {
+    color: #fff;
+    font-weight: 600;
+  }
+  .feat-tpl-arrow {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.2);
+    align-self: center;
+    flex-shrink: 0;
+    padding-top: 20px;
+  }
+
+  .cta {
+    padding: 0 var(--pad-x) var(--section-gap);
+  }
+
+  .cta-inner {
+    max-width: var(--inner-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 28px 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .cta-byline {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    margin: 0;
+  }
+
+  /* ══════════════════════════════════
+     ANIMATIONS
+     ══════════════════════════════════ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal[data-delay="1"] {
+    transition-delay: 0.12s;
+  }
+  .reveal[data-delay="2"] {
+    transition-delay: 0.24s;
+  }
+  .reveal[data-delay="3"] {
+    transition-delay: 0.36s;
+  }
+
+  /* ══════════════════════════════════
+     RESPONSIVE — TABLET
+     ══════════════════════════════════ */
+  @media (max-width: 1279px) {
+    main {
+      --pad-x: var(--padding-horizontal-tablet);
+      --section-gap: 88px;
+    }
+
+    .transform-grid {
+      grid-template-columns: 1fr auto 2fr;
+      gap: 16px;
+    }
+
+    .codewin {
+      height: 320px;
+    }
+
+    .arrow-svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .control-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+
+  /* ══════════════════════════════════
+     RESPONSIVE — MOBILE
+     ══════════════════════════════════ */
+  @media (max-width: 767px) {
+    main {
+      --pad-x: var(--padding-horizontal-mobile);
+      --section-gap: 64px;
+    }
+
+    .hero {
+      padding-top: 48px;
+    }
+
+    .hero-sub {
+      white-space: normal;
+      flex-wrap: wrap;
+    }
+
+    .hero-title {
+      white-space: normal;
+    }
+
+    .hero-actions {
+      flex-direction: column;
+    }
+    .hero-actions .btn-solid,
+    .hero-actions .btn-ghost {
+      width: 100%;
+    }
+
+
+    .problem-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .problem-card {
+      padding: 24px;
+    }
+
+    .transform-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .transform-arrow {
+      transform: rotate(90deg);
+    }
+
+    .codewin-split {
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .split-tree {
+      width: 100%;
+      border-right: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 8px 0;
+      max-height: 140px;
+      overflow-y: hidden;
+    }
+
+    .split-content {
+      padding: 12px 14px;
+      min-height: 180px;
+    }
+
+    .benefits {
+      grid-template-columns: 1fr;
+    }
+
+    .benefit {
+      padding: 24px;
+    }
+
+    .control-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .cta-inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+  }
+</style>

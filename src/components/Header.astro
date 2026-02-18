@@ -19,6 +19,17 @@
       </a>
 
       <nav class="nav">
+        <div class="nav-dropdown">
+          <button class="nav-link nav-dropdown-trigger" aria-haspopup="true">
+            Projects
+            <span class="dropdown-caret">▾</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/projects/openapi-to-skills" class="nav-dropdown-item">
+              openapi-to-skills
+            </a>
+          </div>
+        </div>
         <a href="/blog" class="nav-link">Blog</a>
         <a
           href="https://docs.neutree.ai"
@@ -206,6 +217,101 @@
     height: 16px;
   }
 
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown-trigger {
+    appearance: none;
+    -webkit-appearance: none;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: var(--color-text-primary);
+  }
+
+  .dropdown-caret {
+    font-size: 12px;
+    line-height: 1;
+    transform: translateY(-1px);
+  }
+
+  .nav-dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 24px rgba(12, 40, 73, 0.08);
+    padding: 12px 6px 6px;
+    z-index: 110;
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+    transform-origin: top left;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease,
+      visibility 0.18s ease;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-menu,
+  .nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .nav-dropdown:hover .nav-dropdown-trigger,
+  .nav-dropdown:focus-within .nav-dropdown-trigger,
+  .nav-dropdown-trigger:hover,
+  .nav-dropdown-trigger:focus-visible {
+    background-color: rgba(12, 40, 73, 0.1);
+    color: var(--color-text-primary);
+    outline: none;
+  }
+
+  .nav-dropdown-item {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: var(--font-size-button);
+    line-height: 1.302em;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    transition:
+      background-color 0.18s ease,
+      color 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  .nav-dropdown-item:hover {
+    background-color: rgba(12, 40, 73, 0.1);
+    transform: translateX(1px);
+  }
+
+  .nav-dropdown-item:focus-visible {
+    background-color: rgba(12, 40, 73, 0.1);
+    outline: none;
+  }
+
+  .dropdown-caret {
+    transition: transform 0.18s ease;
+  }
+
+  .nav-dropdown:hover .dropdown-caret,
+  .nav-dropdown:focus-within .dropdown-caret {
+    transform: translateY(-1px) rotate(180deg);
+  }
+
   /* Tablet Responsive */
   @media (max-width: 1279px) {
     .header {
@@ -235,6 +341,12 @@
 
     .nav-link {
       font-size: 0.9375rem;
+    }
+
+    .nav-dropdown-menu {
+      left: auto;
+      right: 0;
+      min-width: 180px;
     }
 
     .nav-icon svg {
