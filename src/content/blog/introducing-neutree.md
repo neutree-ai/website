@@ -1,7 +1,7 @@
 ---
 title: "Introducing Neutree: An Enterprise-Grade Private Model-as-a-Service Platform"
 description: "Running a model is no longer the hard part. The real challenge is turning models into reliable, governable services across modern infrastructure. Neutree is built to solve this problem."
-pubDate: 2025-12-21
+pubDate: 2026-01-31
 coverImage: "/images/og-image.png"
 coverAlt: "Neutree Introduction"
 tags: ["introduction", "product"]
