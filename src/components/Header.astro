@@ -1,21 +1,42 @@
 ---
 // Header - Navigation bar with logo and links
+//
+// The bar is the site's and stays the same everywhere. What changes per page is
+// where Docs and GitHub point, because those belong to a project rather than to
+// the company — a project page that sent them to another product's docs would
+// be the site lying about where it is.
+import { resolveProject, type ProjectKey } from '../config/projects'
+
+interface Props {
+  project?: ProjectKey
+}
+
+const { project = 'maas' } = Astro.props
+const active = resolveProject(project)
 ---
 
 <header class="header" id="header">
   <div class="container">
     <div class="header-content">
       <a href="/" class="logo">
-        <img 
-          src="/images/neutree-logo-shape.svg" 
-          alt="Neutree" 
-          class="logo-shape" 
+        <img
+          src="/images/neutree-logo-shape.svg"
+          alt="Neutree"
+          class="logo-shape"
         />
-        <img 
-          src="/images/neutree-logo-text.svg" 
-          alt="Neutree" 
-          class="logo-text" 
+        <img
+          src="/images/neutree-logo-text.svg"
+          alt="Neutree"
+          class="logo-text"
         />
+        {
+          active.short && (
+            <>
+              <span class="logo-sep" aria-hidden="true" />
+              <span class="logo-product">{active.short}</span>
+            </>
+          )
+        }
       </a>
 
       <nav class="nav">
@@ -34,16 +55,20 @@
           </div>
         </div>
         <a href="/blog" class="nav-link">Blog</a>
+        {
+          active.docs && (
+            <a
+              href={active.docs}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="nav-link"
+            >
+              Docs
+            </a>
+          )
+        }
         <a
-          href="https://docs.neutree.ai"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="nav-link"
-        >
-          Docs
-        </a>
-        <a
-          href="https://github.com/neutree-ai/neutree"
+          href={active.repo}
           target="_blank"
           rel="noopener noreferrer"
           class="nav-link nav-icon"
@@ -174,6 +199,32 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+  }
+
+  /* On a project page the company name is half of a lockup, so it is not the
+     home page's reveal-on-scroll flourish — it is always spelled out, without
+     waiting for script. */
+  .logo:has(.logo-product) .logo-text {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  /* the product's name rides after the company's, told apart by a hairline */
+  .logo-sep {
+    width: 1px;
+    height: 18px;
+    background: var(--color-border);
+    flex-shrink: 0;
+  }
+
+  .logo-product {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-tight);
+    color: var(--color-text-primary);
+    white-space: nowrap;
   }
 
   .nav {
@@ -338,12 +389,29 @@
       height: 14px;
     }
 
+    /* On a phone the bar has to hold a dropdown, two or three links and an
+       icon inside about 320px. The company wordmark goes first — the shape
+       carries the brand, and on a project page the product's name is the one
+       word that has to stay — and what is left gives up its gaps. */
+    .logo-text {
+      display: none;
+    }
+
+    .logo {
+      gap: 8px;
+    }
+
     .nav {
-      gap: var(--spacing-md);
+      gap: 0;
     }
 
     .nav-link {
-      font-size: 0.9375rem;
+      font-size: 0.875rem;
+      padding: 8px 6px;
+    }
+
+    .logo-product {
+      font-size: 16px;
     }
 
     .nav-dropdown-menu {
@@ -352,9 +420,13 @@
       min-width: 180px;
     }
 
+    .nav-icon {
+      padding: 8px 6px;
+    }
+
     .nav-icon svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
   }
 </style>

@@ -14,9 +14,12 @@
  *   <= 900px   nothing has room to sit beside anything else, so every grid
  *              becomes one column and the paired-with-a-diagram layouts
  *              stop pretending
- *   <= 620px   the page is being read on a phone: the chrome, the rhythm and
- *              the type all step down, and anything drawn in design units is
- *              either made swipeable at a legible width or left out
+ *   <= 620px   the page is being read on a phone: the rhythm and the type step
+ *              down, and anything drawn in design units is either made
+ *              swipeable at a legible width or left out
+ *
+ * The header and the footer are not here: they are the site's, and they carry
+ * their own breakpoints for every page that uses them.
  */
 
 /* ================================================================== <= 900px */
@@ -33,7 +36,6 @@
   .rn-notes,
   .start-inner,
   .rn-envs,
-  .foot-grid,
   .ss,
   .mw-grid,
   .ui-split {
@@ -156,26 +158,6 @@
     font-size: 16px;
   }
 
-  /* ---- header ----------------------------------------------------------- */
-  /* the company wordmark is the first thing that can go: the shape carries it,
-     and the one name this page must always show is the product's */
-  .mark-text {
-    display: none;
-  }
-
-  .mark {
-    gap: 10px;
-  }
-
-  nav.top {
-    gap: 2px;
-  }
-
-  nav.top a {
-    padding: 8px 9px;
-    font-size: 15px;
-  }
-
   /* ---- hero ------------------------------------------------------------- */
   .hero {
     padding-top: 52px;
@@ -245,22 +227,5 @@
   .start h2,
   .rn-head h2 {
     font-size: clamp(26px, 7.4vw, 34px);
-  }
-
-  /* ---- footer ----------------------------------------------------------- */
-  /* the two link columns are short enough to stay side by side; only the
-     brand block wants the full width */
-  .foot-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .foot-grid > :first-child {
-    grid-column: 1 / -1;
-  }
-
-  /* a line of text is a 20px target; a thumb wants half again as much */
-  .foot-list a {
-    display: inline-block;
-    padding-block: 6px;
   }
 }

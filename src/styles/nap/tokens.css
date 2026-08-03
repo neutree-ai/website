@@ -35,6 +35,17 @@
   --wrap: 1180px;
   --pad: 28px;
 
+  /* The site's header and footer measure themselves with the tokens below, and
+     the site's column is wider than this page's with a wider gutter — left
+     alone, the logo lands 78px outside the content it sits above. Rather than
+     widen a page that was designed around `--wrap`, the chrome is told this
+     page's measurements. Stated in terms of --wrap and --pad, so the narrow
+     tier moves the chrome with the content for free. */
+  --max-width-content: calc(var(--wrap) - 2 * var(--pad));
+  --padding-horizontal-desktop: var(--pad);
+  --padding-horizontal-tablet: var(--pad);
+  --padding-horizontal-mobile: var(--pad);
+
   /* the hairline this page draws everything with */
   --line: 2px;
 
@@ -80,6 +91,21 @@ body {
 
 a {
   color: inherit;
+}
+
+/* The site's baseline (in `@layer base`) sets line-height on `p` and on the
+   headings directly. A layer cannot help here: an inherited value loses to any
+   rule that matches the element, whatever layer that rule is in. So this page
+   says out loud that its type inherits the rhythm `body` sets, and the class
+   rules below that do want their own still win. */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  line-height: inherit;
 }
 
 .wrap {

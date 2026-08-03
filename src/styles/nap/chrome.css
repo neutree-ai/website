@@ -1,107 +1,8 @@
 /*
- * The page frame: its header, its act heads, the two-column row, the panels and
- * the blocks that close the page out.
+ * The page frame: its act heads, the two-column row, the panels and the blocks
+ * that close the page out. The header and footer are the site's own, shared
+ * with every other page, so nothing about them is here.
  */
-
-/* ------------------------------------------------------------------ header
-   The frame is the site's, down to the logo lockup, the bar colour and the way
-   a nav link lights on hover. Only the destinations are this product's. */
-header.site {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: #fafbfb;
-  /* the site's own header has no rule under it; this page needs one, because
-     what scrolls beneath it is diagrams rather than prose */
-  border-bottom: 1px solid var(--ink-14);
-}
-
-.site-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding-block: 12px;
-}
-
-.mark {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 40px;
-  text-decoration: none;
-  color: var(--ink);
-  transition: opacity 0.2s ease;
-}
-
-.mark:hover {
-  opacity: 0.8;
-}
-
-.mark-shape {
-  width: 35px;
-  height: 40px;
-  flex-shrink: 0;
-  display: block;
-}
-
-.mark-text {
-  width: 80px;
-  height: 17px;
-  flex-shrink: 0;
-  display: block;
-}
-
-/* the product's name rides after the company's, told apart by a hairline */
-.mark-sep {
-  width: 1px;
-  height: 18px;
-  background: var(--ink-14);
-}
-
-/* the product's wordmark, carrying the same weight as the company's mark beside
-   it: this is the one place the short name is always on screen */
-.mark-product {
-  font-family: var(--disp);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: var(--tight);
-  color: var(--ink);
-}
-
-nav.top {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-nav.top a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border-radius: var(--r-chip);
-  text-decoration: none;
-  color: var(--ink);
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.302;
-  transition: background-color 0.2s ease;
-}
-
-nav.top a:hover {
-  background-color: rgba(12, 40, 73, 0.1);
-}
-
-.nav-gh svg {
-  display: block;
-  width: 16px;
-  height: 16px;
-}
-
-nav.top a:hover {
-  color: var(--ink);
-}
 
 /* ------------------------------------------------------------------ buttons */
 .btn {
@@ -409,12 +310,19 @@ nav.top a:hover {
 .start p {
   color: var(--ink-62);
   font-size: 14.5px;
+  /* the column's paragraphs are separated by a blank line, which used to come
+     from the browser's own paragraph margin; the site's reset removes it, so
+     the spacing is stated */
+  margin-bottom: 1em;
 }
 
 /* prose links only: a bare `.start a` outranks .btn-primary's own colour and
    paints the button's label with the section's ink, on the section's ink */
 .start p a {
   color: inherit;
+  /* the site's baseline strips underlines from every anchor; prose links keep
+     theirs, which is the only thing marking them as links here */
+  text-decoration-line: underline;
   text-decoration-color: var(--ink-28);
   text-underline-offset: 3px;
 }
@@ -436,76 +344,6 @@ nav.top a:hover {
 
 .start-next .sep {
   color: var(--ink-28);
-}
-
-/* ------------------------------------------------------------------ footer */
-/* ------------------------------------------------------------------ footer
-   Same treatment as the rest of the site: a tinted band, a hairline above it,
-   and headings set as small caps. */
-footer.site {
-  border-top: 1px solid var(--ink-14);
-  background-color: rgba(12, 40, 73, 0.05);
-  padding-block: 48px;
-  font-size: 15px;
-}
-
-.foot-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr));
-  gap: 28px 40px;
-}
-
-.foot-brand {
-  font-size: 1.5rem;
-  font-weight: 600;
-  letter-spacing: var(--tight);
-}
-
-.foot-tag {
-  margin: 12px 0 0;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: rgba(12, 40, 73, 0.5);
-  max-width: 44ch;
-}
-
-.foot-h {
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ink);
-}
-
-.foot-list {
-  list-style: none;
-  margin: 16px 0 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-}
-
-.foot-list a {
-  font-size: 0.9375rem;
-  color: rgba(12, 40, 73, 0.5);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.foot-list a:hover {
-  color: var(--ink-80);
-}
-
-.foot-list a:hover {
-  color: var(--ink);
-}
-
-.foot-bottom {
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid var(--ink-14);
-  color: rgba(12, 40, 73, 0.5);
-  font-size: 0.875rem;
 }
 
 /* ------------------------------------------------------------------ reveal */
