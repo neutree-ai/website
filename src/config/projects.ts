@@ -49,6 +49,9 @@ export const PROJECTS = {
 /** every project shares the org's discussion board */
 export const ORG_DISCUSSIONS = 'https://github.com/orgs/neutree-ai/discussions'
 
+/** one Discord for everything Neutree builds, not one per project */
+export const ORG_DISCORD = 'https://discord.gg/MnsQ73d8dq'
+
 export type ProjectKey = keyof typeof PROJECTS
 
 export function resolveProject(key: ProjectKey = 'maas'): Project {
