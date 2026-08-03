@@ -1,0 +1,32 @@
+---
+import GitHubMark from './GitHubMark.astro'
+---
+
+<section class="start" id="start">
+  <div class="wrap start-inner">
+    <div>
+      <span class="eyebrow">Get started</span>
+      <h2>One command on one machine</h2>
+      <div class="cmd">
+        <div class="cmd-scroll"><code><span class="prompt">$</span>curl -sfL https://nap.neutree.ai/get.sh | sudo sh -</code></div>
+        <button class="copy" id="copy" type="button" data-cmd="curl -sfL https://nap.neutree.ai/get.sh | sudo sh -">Copy</button>
+      </div>
+      <p class="start-spec">One Linux machine · 8 vCPU / 32 GB / 200 GB · around ten workspaces</p>
+      <p class="start-next">
+        <a href="https://nap.neutree.ai/docs/guides/1-setup/">Set up a provider and run your first agent</a>
+        <span class="sep">·</span>
+        <a href="https://nap.neutree.ai/docs/self-host/">Production deployment</a>
+      </p>
+    </div>
+    <div>
+      <span class="eyebrow">Open source</span>
+      <p class="lead-note">Apache 2.0, developed in the open.</p>
+      <div class="cta-row spaced">
+        <a class="btn btn-primary" href="https://github.com/neutree-ai/agent-platform">
+          <GitHubMark size={18} />
+          neutree-ai/agent-platform
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

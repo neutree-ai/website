@@ -1,0 +1,64 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import Hero from '../components/nap/Hero.astro'
+import Deskshot from '../components/nap/Deskshot.astro'
+import Cores from '../components/nap/Cores.astro'
+import ActBuild from '../components/nap/ActBuild.astro'
+import ActDistribute from '../components/nap/ActDistribute.astro'
+import ActOptimize from '../components/nap/ActOptimize.astro'
+import Deployment from '../components/nap/Deployment.astro'
+import GetStarted from '../components/nap/GetStarted.astro'
+
+// This page carries its own design system, so its stylesheets are its own and
+// the order is the cascade: tokens first, then the frame, then the parts that
+// draw inside it, and narrow last so a breakpoint always outranks the layout
+// it is overriding. They are unlayered, which is how they sit above the site's
+// baseline in `@layer base` without a specificity fight.
+import '../styles/nap/tokens.css'
+import '../styles/nap/chrome.css'
+import '../styles/nap/hero.css'
+import '../styles/nap/figure.css'
+import '../styles/nap/product-ui.css'
+import '../styles/nap/narrow.css'
+
+// The lockup, quoted verbatim: the hook carries the title, the positioning line
+// carries the description.
+const title = 'Neutree Agent Platform | Close your laptop. Your agents keep working.'
+const description =
+  'The open-source agent platform to build, distribute, and optimize AI agents, on infrastructure you own.'
+---
+
+<Layout title={title} description={description} ogImage="/images/nap-og-image.png">
+  <!-- the site loads DM Sans and DM Mono; this page also sets display type in
+       Gabarito, and wants DM Sans across its full weight range -->
+  <link
+    slot="head"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=Gabarito:wght@400..900&display=swap"
+    rel="stylesheet"
+  />
+
+  <Header project="nap" />
+
+  <main id="top">
+    <Hero />
+    <Deskshot />
+    <Cores />
+    <ActBuild />
+    <ActDistribute />
+    <ActOptimize />
+    <Deployment />
+    <GetStarted />
+  </main>
+
+  <Footer project="nap" />
+</Layout>
+
+<script>
+  import '../scripts/hero.js'
+  import '../scripts/middleware.js'
+  import '../scripts/distribute.js'
+  import '../scripts/optimize.js'
+  import '../scripts/copy.js'
+</script>

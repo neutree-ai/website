@@ -1,0 +1,793 @@
+/*
+ * The diagram system. One scaffold (.fig) plus the parts each figure draws its
+ * own content with; everything is sized in the design unit the scaffold defines.
+ */
+
+/* ------------------------------------------------------------------ figure
+   Every diagram on this page is the same apparatus: a canvas for geometry and
+   motion, a DOM layer for text, and one design unit both agree on. The unit
+   is measured rather than assumed — the probe reports what the stylesheet
+   actually resolved — so canvas coordinates and CSS sizes cannot drift apart.
+   A figure differs from its neighbours only in its design space, which is why
+   that is all a modifier sets. */
+.fig {
+  position: relative;
+  border: var(--line) solid var(--rule);
+  border-radius: var(--r-stage);
+  background: var(--panel);
+  box-shadow: var(--drop);
+  container-type: inline-size;
+  aspect-ratio: var(--fig-w) / var(--fig-h);
+  --u: calc(100cqw / var(--fig-w));
+  overflow: hidden;
+}
+
+.fig--mw {
+  --fig-w: 625;
+  --fig-h: 430;
+}
+
+.fig--dr {
+  --fig-w: 1000;
+  --fig-h: 400;
+  margin-top: var(--gap-fig);
+}
+
+.fig--op {
+  --fig-w: 1000;
+  --fig-h: 420;
+  margin-top: var(--gap-fig);
+}
+
+/* measured, not assumed: one design unit as the stylesheet resolves it */
+.fig-probe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100 * var(--u));
+  height: 0;
+  pointer-events: none;
+}
+
+.fig-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.fig-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  font-family: var(--mono);
+}
+
+/* nothing is visible until its figure has placed it; otherwise every node in
+   an unplayed panel piles up at the origin */
+.fig-node {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+/* ---- agent middleware ----------------------------------------------------
+   The centrepiece of Build: what the platform hands every agent so no agent
+   has to ship it. Vertical tabs on the left, one stage on the right.
+
+   Every panel is a diagram in the page's own ink language rather than an app
+   screenshot — these explain mechanisms, not screens. Each panel reveals in
+   steps once it becomes active, driven by one shared mechanism (`data-step`),
+   so no panel is dead and none of them needs its own code. */
+.midw {
+  border: var(--line) solid var(--rule-soft);
+  border-radius: 18px;
+  background: var(--paper-2);
+  margin: 10px 0 8px;
+  padding: 40px 38px 44px;
+}
+
+/* a member of the act, not another chapter — the eyebrow-plus-display-heading
+   pairing is the act head's signature and must not repeat inside one */
+.mw-title {
+  font-size: clamp(21px, 2.2vw, 27px);
+  line-height: 1.14;
+  letter-spacing: var(--tight);
+}
+
+.mw-lede {
+  margin: 10px 0 0;
+  max-width: 84ch;
+  font-size: 16.5px;
+  color: var(--ink-62);
+}
+
+.mw-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: 20px 44px;
+  margin-top: 34px;
+  align-items: start;
+}
+
+/* ---------------------------------------------------------------- tabs */
+.mw-tabs {
+  display: grid;
+  gap: 8px;
+}
+
+.mw-tab {
+  position: relative;
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 15px 17px 16px;
+  border: var(--line) solid transparent;
+  border-radius: var(--r-panel);
+  background: none;
+  font-family: inherit;
+  color: inherit;
+  display: grid;
+  gap: 5px;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.mw-tab:hover {
+  background: var(--ink-07);
+}
+
+.mw-tab.on {
+  background: var(--panel);
+  border-color: var(--rule);
+  box-shadow: var(--drop-sm);
+}
+
+.mw-t {
+  font-family: var(--mono);
+  font-size: 14.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink-62);
+  transition: color 0.3s ease;
+}
+
+.mw-tab.on .mw-t {
+  color: var(--ink);
+}
+
+.mw-d {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ink-45);
+}
+
+/* the dwell bar doubles as the carousel's progress */
+.mw-bar {
+  position: absolute;
+  left: 17px;
+  right: 17px;
+  bottom: 9px;
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: var(--ink-14);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mw-tab.on .mw-bar {
+  opacity: 1;
+}
+
+.mw-tabs.idle .mw-bar {
+  opacity: 0;
+}
+
+.mw-bar i {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--pri);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ---------------------------------------------------------------- stage */
+
+/* measured, not assumed: one design unit as the stylesheet actually resolves it */
+
+
+.mw-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: calc(26 * var(--u));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(14 * var(--u));
+  font-family: var(--mono);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.mw-panel.on {
+  opacity: 1;
+}
+
+/* every part of a panel arrives in order once the panel is active */
+/* Panels that choreograph their own layout put every part on this class and
+   let the panel's descriptor position it, so DOM text and canvas drawing
+   share one coordinate system. */
+.mw-panel.free {
+  display: block;
+  padding: 0;
+}
+
+
+.mw-said {
+  font-size: calc(11.5 * var(--u));
+  line-height: 1.5;
+  color: var(--ink-45);
+}
+
+/* a command reads as a command: dark strip, prompt, and the binary picked out */
+.mw-cmd {
+  display: flex;
+  align-items: baseline;
+  gap: calc(7 * var(--u));
+  padding: calc(5 * var(--u)) calc(11 * var(--u));
+  border-radius: calc(6 * var(--u));
+  background: var(--ink);
+  color: color-mix(in srgb, var(--paper) 68%, transparent);
+  font-size: calc(11 * var(--u));
+  line-height: 1.5;
+  white-space: nowrap;
+  transition: background 0.35s ease;
+}
+
+.mw-cmd .p {
+  color: color-mix(in srgb, var(--paper) 38%, transparent);
+}
+
+.mw-cmd b {
+  font-weight: 400;
+  color: var(--pri-lift);
+}
+
+/* what is left after it is finished is not a command any more */
+/* the mention is how this is actually written, so it is shown being written */
+.mw-ask {
+  display: flex;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  padding: calc(8 * var(--u)) calc(14 * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--rule);
+  border-radius: var(--r-pill);
+  background: var(--panel);
+  font-size: calc(12 * var(--u));
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+.mw-ask b {
+  font-weight: 400;
+  color: var(--pri);
+}
+
+/* what actually passes between two agents, in the space under the lanes */
+.mw-detail {
+  display: flex;
+  align-items: baseline;
+  gap: calc(10 * var(--u));
+  padding: calc(9 * var(--u)) calc(13 * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--rule-soft);
+  border-radius: calc(8 * var(--u));
+  background: var(--paper-2);
+  font-size: calc(11.5 * var(--u));
+  color: var(--ink-62);
+}
+
+.mw-detail .k {
+  flex: 0 0 auto;
+  font-size: calc(9.5 * var(--u));
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pri);
+}
+
+.mw-detail .k.in {
+  color: var(--ink-45);
+}
+
+.mw-crumb {
+  font-size: calc(10 * var(--u));
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+.mw-size {
+  font-size: calc(10 * var(--u));
+  color: var(--ink-45);
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* centres a chip inside a slot, so tags of different lengths still line up */
+.mw-seam {
+  font-size: calc(9.5 * var(--u));
+  letter-spacing: 0.2em;
+  color: var(--ink-45);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.mw-mid {
+  display: flex;
+  justify-content: center;
+}
+
+/* Highlighting is a change of colour, never a change of shape: the padding
+   and the radius are always there, and the negative margin keeps the text
+   where it was, so nothing shifts or squares off when a node lights up. */
+.mw-hl {
+  padding: calc(5 * var(--u)) calc(11 * var(--u));
+  border-radius: calc(6 * var(--u));
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+.mw-lit {
+  background: color-mix(in srgb, var(--pri) 13%, transparent);
+  color: var(--ink);
+}
+
+.mw-lit-warn {
+  background: color-mix(in srgb, var(--warn) 15%, transparent);
+  color: #8a4500;
+}
+
+/* a strip that is already dark deepens instead of tinting */
+
+.mw-cmd.mw-lit {
+  background: var(--pri);
+  color: var(--paper);
+}
+
+.mw-cmd.mw-lit .p {
+  color: color-mix(in srgb, var(--paper) 62%, transparent);
+}
+
+.mw-cmd.mw-lit b {
+  color: var(--paper);
+}
+
+/* and a chip fills, rather than growing a halo */
+.mw-mid.mw-lit {
+  background: none;
+}
+
+.mw-mid.mw-lit .mw-pill {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: var(--paper);
+}
+
+/* give a node the box's content rect and let it centre itself, rather than
+   hand-computing an offset that is wrong the moment the text changes */
+.mw-fill {
+  display: flex;
+  align-items: center;
+}
+
+.mw-fill.mw-mid {
+  justify-content: center;
+}
+
+.mw-fill.mw-right {
+  justify-content: flex-end;
+}
+
+.mw-lane {
+  font-size: calc(11 * var(--u));
+  color: var(--ink-62);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.mw-url {
+  font-size: calc(10.5 * var(--u));
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+.mw-warn {
+  color: #a85400;
+}
+
+.mw-gone {
+  font-size: calc(11 * var(--u));
+  color: var(--ink-28);
+  white-space: nowrap;
+}
+
+/* A tool call is drawn as a miniature of what it produces: the same torn
+   corner as the sandbox silhouette, so the two sides of the panel are
+   visibly the same gesture at two scales. */
+.mw-call {
+  display: flex;
+  align-items: center;
+  gap: calc(9 * var(--u));
+  font-size: calc(12 * var(--u));
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.mw-call i {
+  width: calc(11 * var(--u));
+  height: calc(11 * var(--u));
+  flex: 0 0 auto;
+  background: var(--pri);
+  clip-path: polygon(0 0, 66% 0, 100% 34%, 100% 100%, 0 100%);
+}
+
+/* a label that sits on an agent box's filled rail */
+.mw-rail {
+  font-size: calc(10 * var(--u));
+  letter-spacing: 0.14em;
+  line-height: calc(11 * var(--u));
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  white-space: nowrap;
+}
+
+.mw-key {
+  font-size: calc(12 * var(--u));
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.mw-note {
+  font-size: calc(11 * var(--u));
+  line-height: 1.5;
+  color: var(--ink-45);
+}
+
+.mw-pill {
+  transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  padding: calc(4 * var(--u)) calc(10 * var(--u));
+  border-radius: var(--r-pill);
+  border: calc(1.5 * var(--u)) solid color-mix(in srgb, var(--pri) 50%, transparent);
+  background: color-mix(in srgb, var(--pri) 9%, var(--panel));
+  color: var(--pri);
+  font-size: calc(11.5 * var(--u));
+  white-space: nowrap;
+}
+
+.mw-pill.warn {
+  border-color: color-mix(in srgb, var(--warn) 55%, transparent);
+  background: color-mix(in srgb, var(--warn) 12%, var(--panel));
+  color: #a85400;
+}
+
+.mw-pill.mut {
+  border-color: var(--rule);
+  background: var(--paper-2);
+  color: var(--ink-62);
+}
+
+/* ---------------------------------------------------------------- distribute
+   One figure instead of a list of channels: four entrances on the left, one
+   workspace on the right, and a bus that makes "they all arrive at the same
+   place" a shape rather than a sentence. Same container-unit technique as the
+   middleware stage, on a wider design space (1000 units across the wrap). */
+.dist-lede {
+  margin: 20px 0 0;
+  max-width: 68ch;
+  font-size: 17px;
+  color: var(--ink-62);
+}
+
+
+/* measured, not assumed — the canvas reads its scale off this */
+
+
+
+
+.dr-rail {
+  font-size: calc(9.5 * var(--u));
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+/* Both columns are ordinary flex columns that happen to be placed as a
+   whole: row height and spacing come out of the layout, so adding a sixth
+   entrance is one more div and nothing else. */
+.dr-doors {
+  display: flex;
+  flex-direction: column;
+  gap: calc(9 * var(--u));
+}
+
+.dr-list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--u));
+}
+
+/* an entrance: light, many, and interchangeable */
+.dr-door {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(5 * var(--u));
+  padding: 0 calc(17 * var(--u));
+  border: calc(2 * var(--u)) solid var(--rule-soft);
+  border-radius: calc(10 * var(--u));
+  background: var(--paper);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+.dr-door.lit {
+  background: color-mix(in srgb, var(--pri) 7%, var(--panel));
+  border-color: var(--pri);
+}
+
+/* with the examples gone, the type is the headline and the line under it is
+   the only thing left to earn its place */
+.dr-k {
+  font-size: calc(13 * var(--u));
+  line-height: 1.4;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.dr-s {
+  font-family: var(--sans);
+  font-size: calc(10.5 * var(--u));
+  line-height: 1.45;
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+/* the one workspace: its name sits on the ink band the canvas draws */
+.dr-wsname {
+  font-size: calc(13 * var(--u));
+  line-height: 1.4;
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+.dr-sess {
+  flex: 1;
+  min-height: 0;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(10 * var(--u));
+  padding: 0 calc(12 * var(--u));
+  border-radius: calc(8 * var(--u));
+  background: var(--paper-2);
+}
+
+.dr-chip {
+  flex: none;
+  min-width: calc(66 * var(--u));
+  text-align: center;
+  padding: calc(3 * var(--u)) calc(7 * var(--u));
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--pri) 13%, transparent);
+  color: var(--pri);
+  font-size: calc(9 * var(--u));
+  line-height: 1.5;
+}
+
+.dr-q {
+  font-family: var(--sans);
+  font-size: calc(10.5 * var(--u));
+  line-height: 1.4;
+  color: var(--ink-80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------- optimize
+   The gate, drawn once: the agent asks, the request is held by the platform,
+   you sign it, and what lands is the copy on this side of the line. Same
+   container-unit construction as the two figures above it. */
+
+
+
+
+
+.op-band {
+  font-size: calc(12 * var(--u));
+  line-height: 1.4;
+  color: var(--paper);
+  white-space: nowrap;
+}
+
+/* the agent's own tool calls, in the order it makes them */
+.op-calls {
+  display: flex;
+  flex-direction: column;
+  gap: calc(10 * var(--u));
+}
+
+.op-call {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(4 * var(--u));
+}
+
+.op-tool {
+  font-size: calc(11.5 * var(--u));
+  line-height: 1.4;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.op-tool::before {
+  content: '';
+  display: inline-block;
+  width: calc(7 * var(--u));
+  height: calc(7 * var(--u));
+  margin-right: calc(8 * var(--u));
+  border-radius: calc(2 * var(--u));
+  background: var(--pri);
+  vertical-align: calc(1 * var(--u));
+}
+
+.op-res {
+  font-family: var(--sans);
+  font-size: calc(10 * var(--u));
+  line-height: 1.4;
+  color: var(--ink-45);
+  white-space: nowrap;
+  padding-left: calc(15 * var(--u));
+}
+
+/* the held request: a record, not a running thing */
+.op-req {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.op-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.op-title {
+  font-size: calc(11 * var(--u));
+  color: var(--ink-62);
+  white-space: nowrap;
+}
+
+.op-chip {
+  padding: calc(3 * var(--u)) calc(9 * var(--u));
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: #8a4500;
+  font-size: calc(9.5 * var(--u));
+  line-height: 1.5;
+  white-space: nowrap;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+.op-chip.ok {
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
+  color: var(--ok);
+}
+
+.op-diff {
+  display: flex;
+  flex-direction: column;
+  gap: calc(5 * var(--u));
+  font-size: calc(11 * var(--u));
+  line-height: 1.5;
+}
+
+.op-dl {
+  padding: calc(3 * var(--u)) calc(9 * var(--u));
+  border-radius: calc(5 * var(--u));
+  white-space: nowrap;
+}
+
+.op-dl.del {
+  background: var(--del);
+  color: var(--ink-45);
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-28);
+}
+
+.op-dl.add {
+  background: color-mix(in srgb, var(--ok) 12%, transparent);
+  color: var(--ink);
+}
+
+.op-note {
+  font-family: var(--sans);
+  font-size: calc(10 * var(--u));
+  line-height: 1.45;
+  color: var(--ink-45);
+}
+
+.op-acts {
+  display: flex;
+  align-items: center;
+  gap: calc(9 * var(--u));
+  transition: opacity 0.5s ease;
+}
+
+.op-acts.done {
+  opacity: 0.4;
+}
+
+.op-btn {
+  padding: calc(5 * var(--u)) calc(13 * var(--u));
+  border: calc(2 * var(--u)) solid var(--rule);
+  border-radius: calc(7 * var(--u));
+  font-size: calc(10.5 * var(--u));
+  line-height: 1.5;
+  color: var(--ink-62);
+  white-space: nowrap;
+  transition: transform 0.18s ease;
+}
+
+.op-btn.pri {
+  border-color: var(--pri);
+  background: var(--pri);
+  color: var(--paper);
+}
+
+.op-btn.press {
+  transform: scale(0.94);
+}
+
+.op-mut {
+  font-family: var(--sans);
+  font-size: calc(9.5 * var(--u));
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+.op-lab {
+  font-family: var(--sans);
+  font-size: calc(10 * var(--u));
+  line-height: 1.4;
+  color: var(--ink-45);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.op-lab.op-left {
+  text-align: left;
+}
+
+.op-ws {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.op-wsk {
+  font-size: calc(11 * var(--u));
+  color: var(--ink-62);
+  white-space: nowrap;
+}

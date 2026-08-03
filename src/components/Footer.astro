@@ -1,5 +1,17 @@
 ---
 // Footer - Links to Arcfra, team, and contact information
+//
+// The Company block and the copyright are the org's and never vary. The brand
+// block and the Community links belong to whichever project the page is about,
+// so they are resolved rather than written in.
+import { ORG_DISCUSSIONS, resolveProject, type ProjectKey } from '../config/projects'
+
+interface Props {
+  project?: ProjectKey
+}
+
+const { project = 'maas' } = Astro.props
+const active = resolveProject(project)
 const currentYear = new Date().getFullYear();
 ---
 
@@ -7,10 +19,8 @@ const currentYear = new Date().getFullYear();
   <div class="container">
     <div class="footer-content">
       <div class="footer-section">
-        <h3 class="footer-brand">Neutree</h3>
-        <p class="footer-tagline">
-          Enterprise-grade Private Model-as-a-Service Platform
-        </p>
+        <h3 class="footer-brand">{active.name}</h3>
+        <p class="footer-tagline">{active.tagline}</p>
       </div>
 
       <div class="footer-section">
@@ -18,7 +28,7 @@ const currentYear = new Date().getFullYear();
         <ul class="footer-links">
           <li>
             <a
-              href="https://github.com/neutree-ai/neutree"
+              href={active.repo}
               target="_blank"
               rel="noopener noreferrer">GitHub</a
             >
@@ -32,14 +42,14 @@ const currentYear = new Date().getFullYear();
           </li> -->
           <li>
             <a
-              href="https://github.com/orgs/neutree-ai/discussions"
+              href={ORG_DISCUSSIONS}
               target="_blank"
               rel="noopener noreferrer">Discussions</a
             >
           </li>
           <li>
             <a
-              href="https://github.com/neutree-ai/neutree/issues"
+              href={`${active.repo}/issues`}
               target="_blank"
               rel="noopener noreferrer">Issues</a
             >

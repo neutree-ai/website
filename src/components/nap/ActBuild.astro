@@ -1,0 +1,214 @@
+<div class="wrap">
+  <div class="act-head">
+    <span class="act-name">01 / Build</span>
+    <h2 class="act-claim">An agent is a prompt, its skills and its tools, on a frontier core.</h2>
+  </div>
+
+  <section class="row">
+    <div class="row-text">
+      <h3>Tune it once, <em>and the team has it</em></h3>
+      <p>
+        Those three pieces live in a shared library with scopes and versions. Point a workspace at
+        one and it follows every update, instead of five copies drifting apart.
+      </p>
+    </div>
+    <div class="row-panel">
+      <div class="shot">
+        <div class="ui">
+          <div class="ui-winhead">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" /></svg>
+            <span>Library</span>
+            <span class="ui-spacer"></span>
+            <span class="ui-chip plain">6 workspaces reference these</span>
+          </div>
+          <div class="ui-split">
+            <div class="ui-nav">
+              <div class="n sel">Prompts</div>
+              <div class="n">Skills</div>
+              <div class="n">MCP</div>
+              <div class="n">Commands</div>
+              <div class="n">Templates</div>
+            </div>
+            <div class="ui-pane">
+              <div class="ui-row">
+                <span class="t">support-triage</span>
+                <span class="ui-chip info">team</span>
+                <span class="m">v5</span>
+              </div>
+              <div class="ui-row">
+                <span class="t">refund-reply</span>
+                <span class="ui-chip info">team</span>
+                <span class="m">v2</span>
+              </div>
+              <div class="ui-row">
+                <span class="t">escalation-rules</span>
+                <span class="ui-chip plain">private</span>
+                <span class="m">v1</span>
+              </div>
+              <div class="ui-row">
+                <span class="t">tone-of-voice</span>
+                <span class="ui-chip ok">public</span>
+                <span class="m">v7</span>
+              </div>
+              <div class="ui-actions">
+                <span class="ui-btn pri">New prompt</span>
+                <span class="ui-btn">Import from workspace</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- =================================================== agent middleware -->
+  <section class="midw">
+    <h3 class="mw-title">Agent middleware: the hard parts already run here</h3>
+    <p class="mw-lede">
+      Middleware is the layer beneath the agent: capabilities the platform runs, so every
+      workspace has them from minute one.
+    </p>
+
+    <div class="mw-grid">
+      <div class="mw-tabs" id="mwTabs" role="tablist" aria-label="Agent middleware">
+        <button class="mw-tab on" type="button" role="tab" aria-selected="true">
+          <span class="mw-t">Code sandbox</span>
+          <span class="mw-d">Isolated containers for running code, created on demand.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+        <button class="mw-tab" type="button" role="tab" aria-selected="false">
+          <span class="mw-t">Remote browser</span>
+          <span class="mw-d">Browsers the agent drives, streamed to the user over WebRTC.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+        <button class="mw-tab" type="button" role="tab" aria-selected="false">
+          <span class="mw-t">Agent-to-agent calls</span>
+          <span class="mw-d">One workspace calls another; the platform routes and authorises it.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+        <button class="mw-tab" type="button" role="tab" aria-selected="false">
+          <span class="mw-t">Cross-agent filesystem</span>
+          <span class="mw-d">Permissioned directories that two workspaces can both mount.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+        <button class="mw-tab" type="button" role="tab" aria-selected="false">
+          <span class="mw-t">Memory store</span>
+          <span class="mw-d">Long-term memory stores, mounted into a workspace as a directory.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+        <button class="mw-tab" type="button" role="tab" aria-selected="false">
+          <span class="mw-t">MCP connections</span>
+          <span class="mw-d">Connect a server once; the platform attaches and refreshes the token.</span>
+          <span class="mw-bar"><i></i></span>
+        </button>
+      </div>
+
+      <div class="fig fig--mw" id="mwStage">
+        <canvas class="fig-cv" id="mwCv" aria-hidden="true"></canvas>
+        <i class="fig-probe" id="mwProbe" aria-hidden="true"></i>
+        <div class="mw-panel free on">
+          <div class="fig-node mw-rail" data-n="zl">AGENT</div>
+          <div class="fig-node mw-said" data-n="m1">render the promo cut</div>
+          <div class="fig-node mw-call" data-n="t1"><i></i>ffmpeg</div>
+          <div class="fig-node mw-said" data-n="m2">check the signup flow</div>
+          <div class="fig-node mw-call" data-n="t2"><i></i>playwright</div>
+          <div class="fig-node mw-said" data-n="m3">summarise last week</div>
+          <div class="fig-node mw-call" data-n="t3"><i></i>pandas</div>
+          <div class="fig-node mw-note" data-n="slim">none of these live in the agent&rsquo;s own container</div>
+          <div class="fig-node mw-key" data-n="s1">jrottenberg/ffmpeg</div>
+          <div class="fig-node mw-cmd" data-n="c1"><span class="p">$</span><span><b>ffmpeg</b> -i raw.mov promo.mp4</span></div>
+          <div class="fig-node mw-gone" data-n="r1">done, and thrown away</div>
+          <div class="fig-node mw-key" data-n="s2">mcr.microsoft.com/playwright</div>
+          <div class="fig-node mw-cmd" data-n="c2"><span class="p">$</span><span><b>npx</b> playwright test signup</span></div>
+          <div class="fig-node mw-key" data-n="s3">python:3.12-bookworm</div>
+          <div class="fig-node mw-cmd" data-n="c3"><span class="p">$</span><span><b>python</b> tickets.py --week</span></div>
+        </div>
+        <div class="mw-panel free">
+          <div class="fig-node mw-rail" data-n="zl">AGENT</div>
+          <div class="fig-node mw-said" data-n="m1">sign in and export</div>
+          <div class="fig-node mw-call" data-n="t1"><i></i>browser</div>
+          <div class="fig-node mw-cmd" data-n="k1"><span class="p">$</span><span><b>agent-browser</b> open</span></div>
+          <div class="fig-node mw-cmd" data-n="k2"><span class="p">$</span><span><b>agent-browser</b> snapshot -i</span></div>
+          <div class="fig-node mw-cmd" data-n="k3"><span class="p">$</span><span><b>agent-browser</b> click</span></div>
+          <div class="fig-node mw-url" data-n="url">app.example.com/reports</div>
+          <div class="fig-node mw-note" data-n="stuck">this bit needs a person</div>
+          <div class="fig-node mw-note mw-warn" data-n="take">you take the keyboard, same session</div>
+        </div>
+        <div class="mw-panel free">
+          <div class="fig-node mw-ask" data-n="ask"><b>@agent/researcher</b> compare the two vendors</div>
+          <div class="fig-node mw-lane" data-n="l0">coordinator</div>
+          <div class="fig-node mw-lane" data-n="l1">search · docs</div>
+          <div class="fig-node mw-lane" data-n="l2">search · news</div>
+          <div class="fig-node mw-lane" data-n="l3">search · pricing</div>
+          <div class="fig-node mw-lane" data-n="l4">check · claims</div>
+          <div class="fig-node mw-lane" data-n="l5">check · numbers</div>
+          <div class="fig-node mw-lane" data-n="l6">check · sources</div>
+          <div class="fig-node mw-lane" data-n="l7">writer</div>
+          <div class="fig-node mw-detail" data-n="d1"><span class="k">prompt</span>find pricing, docs and recent news</div>
+          <div class="fig-node mw-detail" data-n="d2"><span class="k in">result</span>14 sources, 3 of them conflict</div>
+          <div class="fig-node mw-detail" data-n="d3"><span class="k">prompt</span>verify the three conflicts</div>
+          <div class="fig-node mw-detail" data-n="d4"><span class="k in">result</span>2 of 9 claims dropped</div>
+        </div>
+        <div class="mw-panel free">
+          <div class="fig-node mw-rail" data-n="r0">WORKSPACE A</div>
+          <div class="fig-node mw-said" data-n="p0">draft the notes</div>
+          <div class="fig-node mw-mid" data-n="c0"><span class="mw-pill">read_write</span></div>
+          <div class="fig-node mw-rail" data-n="r1">WORKSPACE B</div>
+          <div class="fig-node mw-said" data-n="p1">add the pricing</div>
+          <div class="fig-node mw-mid" data-n="c1"><span class="mw-pill">read_write</span></div>
+          <div class="fig-node mw-rail" data-n="r2">WORKSPACE C</div>
+          <div class="fig-node mw-said" data-n="p2">summarise both</div>
+          <div class="fig-node mw-mid" data-n="c2"><span class="mw-pill mut">read_only</span></div>
+          <div class="fig-node mw-crumb" data-n="path">/mnt/afs/notes</div>
+          <div class="fig-node mw-key" data-n="d0">drafts</div>
+          <div class="fig-node mw-key" data-n="d1">vendor-a.md</div>
+          <div class="fig-node mw-size" data-n="q1">2.1 KB</div>
+          <div class="fig-node mw-key" data-n="d2">pricing.csv</div>
+          <div class="fig-node mw-size" data-n="q2">12.6 KB</div>
+        </div>
+        <div class="mw-panel free">
+          <div class="fig-node mw-rail" data-n="wr">WORKSPACE</div>
+          <div class="fig-node mw-said mw-fill mw-mid" data-n="wp">note what we settled</div>
+          <div class="fig-node mw-note mw-fill mw-mid" data-n="w2">another workspace</div>
+          <div class="fig-node mw-mid" data-n="k1"><span class="mw-pill">read_write</span></div>
+          <div class="fig-node mw-mid" data-n="k2"><span class="mw-pill mut">read_only</span></div>
+          <div class="fig-node mw-key" data-n="n1">notes</div>
+          <div class="fig-node mw-crumb" data-n="u1">/mnt/memory/k3f9x2ab/</div>
+          <div class="fig-node mw-key" data-n="n2">policies</div>
+          <div class="fig-node mw-crumb" data-n="u2">/mnt/memory/7dq2m4xz/</div>
+          <div class="fig-node mw-seam mw-fill mw-mid" data-n="fu">FUSE</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="c1">store_id</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="c2">path</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="c3">updated</div>
+          <div class="fig-node mw-key mw-fill" data-n="g1">k3f9x2ab</div>
+          <div class="fig-node mw-crumb mw-fill" data-n="h1">/MEMORY.md</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="t1">2d ago</div>
+          <div class="fig-node mw-key mw-fill" data-n="g2">k3f9x2ab</div>
+          <div class="fig-node mw-crumb mw-fill" data-n="h2">/project/q3.md</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="t2">5d ago</div>
+          <div class="fig-node mw-size mw-warn mw-fill mw-right" data-n="t2b">just now</div>
+          <div class="fig-node mw-key mw-fill" data-n="g3">7dq2m4xz</div>
+          <div class="fig-node mw-crumb mw-fill" data-n="h3">/refunds.md</div>
+          <div class="fig-node mw-size mw-fill mw-right" data-n="t3">1w ago</div>
+        </div>
+        <div class="mw-panel free">
+          <div class="fig-node mw-rail" data-n="ra">AGENT</div>
+          <div class="fig-node mw-cmd" data-n="cfg"><span class="p">url</span><span>/_cp/mcp/…</span></div>
+          <div class="fig-node mw-note mw-hl" data-n="none">no token in here</div>
+          <div class="fig-node mw-rail" data-n="rp">CONTROL PLANE</div>
+          <div class="fig-node mw-said mw-fill" data-n="act">attaches your token</div>
+          <div class="fig-node mw-mid" data-n="tok"><span class="mw-pill">Bearer ••••••••</span></div>
+          <div class="fig-node mw-rail" data-n="ru">UPSTREAM</div>
+          <div class="fig-node mw-said mw-hl" data-n="usig">arrives signed</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="coda">
+    <h3><em>Or let it</em> build itself</h3>
+    <p>
+      Every piece above is a field you can fill in yourself. Builder mode is the other way round:
+      you describe the goal, and the agent configures its own core, prompt, skills and schedule.
+    </p>
+  </section>
+</div>

@@ -51,6 +51,7 @@ const imageUrl = ogImage.startsWith("http")
     />
 
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body>
     <slot />
@@ -61,6 +62,13 @@ const imageUrl = ogImage.startsWith("http")
 </html>
 
 <style is:global>
+  /* The order is declared before either layer is used, and both stylesheets
+     that participate say it, so it holds however the bundler orders them.
+     Anything unlayered outranks both, which is what a page's own components
+     rely on today. */
+  @layer base, page;
+
+  @layer base {
   :root {
     /* Color System - Based on Figma Design */
     --color-text-primary: #0C2849;
@@ -225,5 +233,6 @@ const imageUrl = ogImage.startsWith("http")
 
   a:hover {
     color: var(--color-text-secondary);
+  }
   }
 </style>
