@@ -1,0 +1,62 @@
+<div class="wrap">
+  <div class="act-head">
+    <span class="act-name">03 / Optimize</span>
+    <h2 class="act-claim">The agent proposes. You approve.</h2>
+  </div>
+  <p class="dist-lede">
+    Ask it to read its own sessions and it comes back with a change to itself. You approve the
+    change, and the platform applies the copy you approved.
+  </p>
+
+  <div class="fig fig--op" id="opStage">
+    <canvas class="fig-cv" id="opCv" aria-hidden="true"></canvas>
+    <i class="fig-probe" id="opProbe" aria-hidden="true"></i>
+    <div class="fig-layer" id="opLayer">
+      <div class="fig-node op-band" data-n="band">Agent · builder mode</div>
+
+      <div class="fig-node op-calls" data-n="calls">
+        <div class="op-call">
+          <span class="op-tool" data-n="t0">list_sessions</span>
+          <span class="op-res" data-n="r0">1,240 sessions in this workspace</span>
+        </div>
+        <div class="op-call">
+          <span class="op-tool" data-n="t1">get_session_export_urls</span>
+          <span class="op-res" data-n="r1">12 transcripts, read in full</span>
+        </div>
+        <div class="op-call">
+          <span class="op-tool" data-n="t2">workspace_prompt_propose</span>
+          <span class="op-res" data-n="r2">req_8f2c41 · the id, not the change</span>
+        </div>
+        <div class="op-call">
+          <span class="op-tool" data-n="t3">workspace_prompt_apply</span>
+          <span class="op-res" data-n="r3">applied</span>
+        </div>
+      </div>
+
+      <div class="fig-node op-req" data-n="req">
+        <div class="op-head">
+          <span class="op-title">agent_requests</span>
+          <span class="op-chip" data-n="chip">pending</span>
+        </div>
+        <div class="op-diff" data-n="diff">
+          <div class="op-dl del">- Reply in the language of the ticket</div>
+          <div class="op-dl add">+ Reply in the language of the customer's last message</div>
+        </div>
+        <div class="op-note" data-n="note">the change is held here, not by the agent</div>
+        <div class="op-acts" data-n="acts">
+          <span class="op-btn pri" data-n="ok">Approve</span>
+          <span class="op-btn">Reject</span>
+          <span class="op-mut">the owner decides</span>
+        </div>
+      </div>
+
+      <div class="fig-node op-lab" data-n="lab">propose</div>
+      <div class="fig-node op-lab op-left" data-n="lab2">re-reads what you approved</div>
+
+      <div class="fig-node op-ws" data-n="ws">
+        <span class="op-wsk">Workspace · system prompt</span>
+        <span class="op-chip ok" data-n="wschip">updated</span>
+      </div>
+    </div>
+  </div>
+</div>

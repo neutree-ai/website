@@ -1,0 +1,46 @@
+<section class="runs">
+  <div class="wrap runs-inner">
+    <span class="eyebrow">Deployment</span>
+    <h2 class="h-section">One control plane, as many clusters as you need.</h2>
+
+    <div class="rn-fig">
+      <div class="rn-cp"><span class="dot"></span>Control plane</div>
+      <ul class="rn-envs">
+        <li class="rn-env here">
+          <span class="rn-link" aria-hidden="true"></span>
+          <h4>The cluster you install on</h4>
+          <p>Workspaces run beside the control plane.</p>
+        </li>
+        <li class="rn-env">
+          <span class="rn-link" aria-hidden="true"></span>
+          <span class="rn-tag">one outbound connection</span>
+          <h4>A cluster behind NAT</h4>
+          <p>Its runner dials the control plane and keeps the line open.</p>
+        </li>
+        <li class="rn-env">
+          <span class="rn-link" aria-hidden="true"></span>
+          <h4>A customer site</h4>
+          <p>Their cluster, their network, your workspaces.</p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="rn-notes">
+      <div>
+        <h3>One installer, one node or a cluster</h3>
+        <p>
+          The same install targets a single k3s host or a Kubernetes cluster you already run.
+          It can also install with no internet at all, from a bundled image set and a registry
+          it brings up itself.
+        </p>
+      </div>
+      <div>
+        <h3>Environments dial out</h3>
+        <p>
+          A runner inside the cluster opens one connection to the control plane and works over
+          it. There is no inbound route to open, and no kubeconfig to hand over.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

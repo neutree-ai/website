@@ -1,0 +1,144 @@
+---
+// The two serving shapes, drawn from one series so the picture cannot drift
+// from its own premise: `DEMAND` is turns arriving over a stretch of a day, and
+// both capacity rows are derived from it.
+//
+// Static holds one replica whatever happens. Auto-scaling follows demand, and
+// follows it asymmetrically, which is the part worth seeing: it rises the moment
+// work arrives and only comes down after several quiet rounds in a row.
+//
+// Both charts are drawn in the same unit — CPU held — because that is what the
+// two shapes actually trade. One large replica holds its four the whole time;
+// several small ones hold one each, and only while they are up.
+const DEMAND = [
+  0, 1, 3, 5, 5, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  3, 5, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+]
+const QUIET_ROUNDS = 3
+
+const STATIC_CPU = 4 // one replica, sized for the peak
+const fixed = DEMAND.map(() => STATIC_CPU)
+
+const auto = []
+let held = 0
+let quiet = 0
+for (const want of DEMAND) {
+  if (want >= held) {
+    held = want
+    quiet = 0
+  } else {
+    quiet += 1
+    if (quiet >= QUIET_ROUNDS) {
+      held = Math.max(want, held - 1)
+      quiet = 0
+    }
+  }
+  auto.push(held)
+}
+---
+
+<div class="wrap">
+  <div class="act-head">
+    <span class="act-name">02 / Distribute</span>
+    <h2 class="act-claim">Every entrance leads to the same agent.</h2>
+  </div>
+  <p class="dist-lede">
+    Slack threads, HTTP calls, CI webhooks and its own schedule all open one workspace, with the
+    same prompt, the same skills and the same memory behind them.
+  </p>
+
+  <div class="fig fig--dr" id="drStage">
+    <canvas class="fig-cv" id="drCv" aria-hidden="true"></canvas>
+    <i class="fig-probe" id="drProbe" aria-hidden="true"></i>
+    <div class="fig-layer" id="drLayer">
+      <ul class="fig-node dr-doors" data-n="doors">
+      <li class="dr-door" data-n="d0">
+        <span class="dr-k">Native UI</span>
+        <span class="dr-s">the console the platform ships</span>
+      </li>
+      <li class="dr-door" data-n="d1">
+        <span class="dr-k">Chat channels</span>
+        <span class="dr-s">the thread becomes the session</span>
+      </li>
+      <li class="dr-door" data-n="d2">
+        <span class="dr-k">HTTP API</span>
+        <span class="dr-s">stream it, or hand off the turn</span>
+      </li>
+      <li class="dr-door" data-n="d3">
+        <span class="dr-k">Webhook</span>
+        <span class="dr-s">filters run before a session exists</span>
+      </li>
+      <li class="dr-door" data-n="d4">
+        <span class="dr-k">Schedule</span>
+        <span class="dr-s">each firing is its own session</span>
+      </li>
+      </ul>
+
+      <div class="fig-node dr-wsname" data-n="wsname">Workspace</div>
+      <div class="fig-node dr-rail" data-n="wsrail">Sessions</div>
+
+      <ul class="fig-node dr-list" data-n="list">
+      <li class="dr-sess" data-n="s0">
+        <span class="dr-chip">ui</span>
+        <span class="dr-q">walk me through last night's failures</span>
+      </li>
+      <li class="dr-sess" data-n="s1">
+        <span class="dr-chip">chat</span>
+        <span class="dr-q">the deploy is red, what happened?</span>
+      </li>
+      <li class="dr-sess" data-n="s2">
+        <span class="dr-chip">api</span>
+        <span class="dr-q">Triage the failing build, open an issue.</span>
+      </li>
+      <li class="dr-sess" data-n="s3">
+        <span class="dr-chip">webhook</span>
+        <span class="dr-q">Build api-e2e failed on main, read the log.</span>
+      </li>
+      <li class="dr-sess" data-n="s4">
+        <span class="dr-chip">schedule</span>
+        <span class="dr-q">Summarize yesterday's failed builds.</span>
+      </li>
+      </ul>
+    </div>
+  </div>
+
+
+  <section class="coda">
+    <h3><em>The same workspace,</em> served two ways</h3>
+
+    <div class="ss">
+      <article class="ss-card">
+        <div class="ss-head">
+          <h4>Static</h4>
+          <span class="ss-n">1 replica</span>
+        </div>
+        <div class="ss-fig">
+          <div class="ss-t">{fixed.map((n) => <i class={`h${n}`} />)}</div>
+        </div>
+        <p class="ss-res">4 vCPU · 8 GiB, held at all times</p>
+        <p class="ss-note">
+          Up whether or not anything is asking. It answers the moment a turn arrives, and holds its
+          machine in between.
+        </p>
+      </article>
+
+      <article class="ss-card">
+        <div class="ss-head">
+          <h4>Auto-scaling<span class="coda-tag">Preview</span></h4>
+          <span class="ss-n">0 to 5 replicas</span>
+        </div>
+        <div class="ss-fig">
+          <div class="ss-t">{auto.map((n) => <i class={`h${n} r${n}`} />)}</div>
+        </div>
+        <p class="ss-res">1 vCPU · 2 GiB per replica, held while it runs</p>
+        <p class="ss-note">
+          Replicas follow the traffic: up at once, down once they drain, none at all while it is
+          idle. Files sit on a shared volume, so the next turn wakes it with them intact.
+        </p>
+      </article>
+    </div>
+
+    <p class="ss-cap">Both sizes are an example. CPU and memory are set per workspace.</p>
+
+  </section>
+</div>

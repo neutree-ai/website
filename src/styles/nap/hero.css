@@ -1,0 +1,885 @@
+/*
+ * The opening: the slogan, the lift figure that carries the three acts, and the
+ * strip of cores underneath it.
+ */
+
+/* ------------------------------------------------------------------ hero */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding-top: 92px;
+  padding-bottom: 72px;
+}
+
+/* 45deg hairline ground — the page's own material, fading out where the
+   product shot takes over. */
+.hero-ground {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent 0 7px,
+    var(--ink-07) 7px 8px
+  );
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 78%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent 78%);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: 40px 72px;
+  align-items: start;
+}
+
+.hero-name {
+  --label-size: 12.5px;
+  --label-track: 0.14em;
+  color: var(--ink-62);
+  margin-bottom: 22px;
+}
+
+/* ---- the lift ------------------------------------------------------------
+   Three acts, and in each one only its own region moves:
+
+     CARRY  the setup rides up the beam; everything else is still and grey
+     RUN    the workspace changes job, size and the middleware it draws on
+     REACH  the three ways in light up and traffic starts arriving
+
+   A tab strip across the top names the acts and doubles as the progress
+   bar — which is also what lets the loop restart without reading as an
+   outage: it is plainly a story being replayed, not a live feed.
+
+   Everything inside the stage is sized in `--u` (one design pixel at a 480px
+   stage) so the figure scales as one piece at any column width. */
+.lift {
+  margin: 0;
+}
+
+/* The hero's figure is not framed like the others — no border, no panel — but
+   it states its design space the same way, and the script reads it from here. */
+.lift-stage {
+  container-type: inline-size;
+  --fig-w: 480;
+  --fig-h: 530;
+  --u: calc(100cqw / var(--fig-w));
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  aspect-ratio: var(--fig-w) / var(--fig-h);
+  font-family: var(--mono);
+}
+
+.lift-cv {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------- the acts */
+.acts {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(6 * var(--u));
+}
+
+.act {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  font-family: var(--mono);
+  display: grid;
+  gap: calc(5 * var(--u));
+}
+
+.act-t {
+  font-size: calc(9.5 * var(--u));
+  letter-spacing: 0.16em;
+  color: var(--ink-28);
+  transition: color 0.35s ease;
+}
+
+.act.on .act-t {
+  color: var(--ink);
+}
+
+.act.done .act-t {
+  color: var(--ink-45);
+}
+
+.act-bar {
+  position: relative;
+  height: calc(2.5 * var(--u));
+  border-radius: var(--r-pill);
+  background: var(--ink-14);
+  overflow: hidden;
+}
+
+.act-bar i {
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(0);
+  border-radius: var(--r-pill);
+  background: var(--pri);
+}
+
+.act.done .act-bar i {
+  transform: scaleX(1);
+  background: var(--ink-28);
+}
+
+.act:hover .act-t {
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- the card */
+.cloud {
+  position: absolute;
+  left: 34%;
+  width: 66%;
+  top: 10.6%;
+  height: 54.7%;
+  border: calc(2 * var(--u)) solid var(--pri);
+  border-radius: calc(13 * var(--u));
+  background: var(--panel);
+  box-shadow: calc(3 * var(--u)) calc(4 * var(--u)) 0
+    color-mix(in srgb, var(--pri) 20%, transparent);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cloud-head {
+  display: flex;
+  align-items: center;
+  gap: calc(8 * var(--u));
+  height: calc(30 * var(--u));
+  padding: 0 calc(12 * var(--u));
+  background: var(--ink);
+  font-size: calc(9.5 * var(--u));
+  letter-spacing: 0.13em;
+  color: color-mix(in srgb, var(--paper) 62%, transparent);
+  flex: 0 0 auto;
+}
+
+/* what the platform is actually handing this agent */
+/* one pip per running copy — with the word, or it reads as a load meter */
+.reps {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: calc(2.5 * var(--u));
+  flex: 0 0 auto;
+}
+
+.reps b {
+  margin-left: calc(5 * var(--u));
+  font-weight: 400;
+  font-size: calc(9 * var(--u));
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--paper) 62%, transparent);
+}
+
+.reps i {
+  width: calc(5 * var(--u));
+  height: calc(9 * var(--u));
+  border-radius: calc(1.5 * var(--u));
+  background: color-mix(in srgb, var(--paper) 16%, transparent);
+  transform: scaleY(0.55);
+  transition: background 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.reps i.on {
+  background: var(--pri-lift);
+  transform: none;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  letter-spacing: 0.05em;
+  color: var(--ok-lift);
+  flex: 0 0 auto;
+}
+
+.status .d {
+  width: calc(5 * var(--u));
+  height: calc(5 * var(--u));
+  border-radius: var(--r-pill);
+  background: currentColor;
+}
+
+.cloud-body {
+  padding: calc(12 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(9 * var(--u));
+  min-height: 0;
+}
+
+/* a fixed-height card must never shrink its rows into each other */
+.cloud-body > * {
+  flex: 0 0 auto;
+}
+
+.ws {
+  font-size: calc(14 * var(--u));
+  line-height: calc(22 * var(--u));
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.ws-meta {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  font-size: calc(10 * var(--u));
+  color: var(--ink-45);
+}
+
+.ws-core {
+  display: grid;
+  align-items: center;
+  height: calc(15 * var(--u));
+  flex: 0 0 auto;
+}
+
+.ws-core span {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  white-space: nowrap;
+  color: var(--ink-62);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.ws-core span.on {
+  opacity: 1;
+}
+
+.self {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(4 * var(--u));
+  padding: calc(2 * var(--u)) calc(5 * var(--u));
+  border: calc(1 * var(--u)) solid var(--rule);
+  border-radius: var(--r-pill);
+  color: var(--ink-62);
+  flex: 0 0 auto;
+}
+
+.ico {
+  width: calc(9 * var(--u));
+  height: calc(9 * var(--u));
+  flex: 0 0 auto;
+  color: var(--ink-45);
+}
+
+/* the row must survive the longest core name without wrapping */
+.ws-meta {
+  flex-wrap: nowrap;
+  overflow: hidden;
+}
+
+.lbl {
+  font-size: calc(9 * var(--u));
+  letter-spacing: 0.14em;
+  color: var(--ink-45);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(5 * var(--u));
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: calc(3.5 * var(--u)) calc(8 * var(--u));
+  border-radius: calc(6 * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--rule);
+  background: var(--paper-2);
+  font-size: calc(10 * var(--u));
+  line-height: 1.5;
+  color: var(--ink-80);
+  white-space: nowrap;
+}
+
+/* the setup that rode up — the payload, so it carries the accent */
+.chip.cfg {
+  border-color: color-mix(in srgb, var(--pri) 62%, transparent);
+  background: color-mix(in srgb, var(--pri) 11%, var(--panel));
+  color: var(--pri);
+  font-weight: 500;
+  opacity: 0;
+  will-change: transform;
+}
+
+/* the version badge occupies its space from the first frame and is merely
+   revealed on approval — that is what keeps the row from reflowing */
+.chip .v {
+  margin-left: calc(4 * var(--u));
+  padding: 0 calc(3 * var(--u));
+  border-radius: calc(3 * var(--u));
+  background: var(--pri);
+  color: var(--paper);
+  font-size: calc(8.5 * var(--u));
+  opacity: 0;
+  transform: translateY(calc(-2 * var(--u)));
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.chip.upgraded .v {
+  opacity: 1;
+  transform: none;
+}
+
+.chip.upgraded {
+  box-shadow: 0 0 0 calc(3 * var(--u)) color-mix(in srgb, var(--pri) 22%, transparent);
+  transition: box-shadow 0.45s ease;
+}
+
+@keyframes chip-pop {
+  0% {
+    transform: scale(1);
+  }
+  38% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.chip.pop {
+  animation: chip-pop 0.5s cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+
+/* what act two leaves behind — the material act three works from */
+.ses {
+  margin-top: auto;
+  display: grid;
+  gap: calc(5 * var(--u));
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  gap: calc(2 * var(--u));
+  height: calc(20 * var(--u));
+  border-bottom: calc(1.5 * var(--u)) solid var(--rule-soft);
+}
+
+/* a session that has not happened yet should not be drawn — bars grow out
+   of the baseline as the traffic actually lands */
+.bars i {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: calc(1.5 * var(--u)) calc(1.5 * var(--u)) 0 0;
+  background: var(--pri);
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform 0.34s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.bars i.on {
+  transform: scaleY(1);
+}
+
+.bars i.flag {
+  background: var(--warn);
+}
+
+.h1 {
+  height: 30%;
+}
+
+.h2 {
+  height: 44%;
+}
+
+.h3 {
+  height: 56%;
+}
+
+.h4 {
+  height: 70%;
+}
+
+.h5 {
+  height: 85%;
+}
+
+.h6 {
+  height: 100%;
+}
+
+/* act three floats over the card — absolutely positioned, so zero reflow */
+.diff {
+  position: absolute;
+  left: calc(12 * var(--u));
+  right: calc(12 * var(--u));
+  bottom: calc(12 * var(--u));
+  z-index: 2;
+  padding: calc(9 * var(--u)) calc(10 * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--rule);
+  border-radius: calc(8 * var(--u));
+  background: var(--panel);
+  box-shadow: 0 calc(10 * var(--u)) calc(24 * var(--u)) calc(-10 * var(--u))
+    rgba(12, 40, 73, 0.35);
+  opacity: 0;
+  transform: translateY(calc(14 * var(--u)));
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+.diff.in {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.diff-h {
+  font-size: calc(8.5 * var(--u));
+  letter-spacing: 0.1em;
+  color: var(--ink-45);
+  margin-bottom: calc(6 * var(--u));
+}
+
+.diff-l {
+  font-size: calc(9 * var(--u));
+  line-height: 1.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 calc(5 * var(--u));
+  border-radius: calc(3 * var(--u));
+}
+
+.diff-l.del {
+  color: #9c3025;
+  background: rgba(200, 60, 40, 0.09);
+}
+
+.diff-l.add {
+  color: #1d6b34;
+  background: rgba(40, 150, 70, 0.11);
+}
+
+.diff-act {
+  display: flex;
+  align-items: center;
+  gap: calc(6 * var(--u));
+  margin-top: calc(8 * var(--u));
+}
+
+.dbtn {
+  appearance: none;
+  font-family: var(--mono);
+  font-size: calc(9 * var(--u));
+  height: calc(19 * var(--u));
+  padding: 0 calc(10 * var(--u));
+  border-radius: calc(5 * var(--u));
+  border: calc(1.5 * var(--u)) solid var(--rule);
+  background: var(--panel);
+  color: var(--ink-62);
+  cursor: pointer;
+}
+
+.dbtn.ok {
+  background: var(--pri);
+  border-color: var(--pri);
+  color: var(--paper);
+}
+
+.dbtn:hover {
+  filter: brightness(0.95);
+}
+
+.diff-hint {
+  margin-left: auto;
+  font-size: calc(8.5 * var(--u));
+  color: var(--ink-28);
+}
+
+.cloud-rule {
+  height: 0;
+  border-top: calc(1.5 * var(--u)) dashed var(--rule-soft);
+}
+
+/* middleware is dim until the job in hand actually draws on it */
+.chip.mw {
+  color: var(--ink-45);
+  border-color: var(--rule-soft);
+  background: transparent;
+  transition: color 0.45s ease, border-color 0.45s ease, background 0.45s ease;
+}
+
+.chip.mw.in {
+  color: var(--ink);
+  border-color: var(--rule);
+  background: var(--paper-2);
+}
+
+/* ---------------------------------------------------------------- local bar */
+.localbar {
+  position: absolute;
+  left: 34%;
+  width: 66%;
+  top: 87.5%;
+  height: 12.5%;
+  border: calc(2 * var(--u)) solid var(--rule-soft);
+  border-radius: calc(11 * var(--u));
+  background: var(--paper-2);
+  padding: calc(9 * var(--u)) calc(11 * var(--u));
+  display: flex;
+  flex-direction: column;
+  gap: calc(7 * var(--u));
+  transition: opacity 0.8s ease;
+}
+
+.localbar.is-dark {
+  opacity: 0.34;
+}
+
+.cores-row {
+  display: flex;
+  align-items: center;
+  gap: calc(4 * var(--u));
+}
+
+.corechip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+  padding: calc(3 * var(--u)) calc(7 * var(--u));
+  border-radius: var(--r-pill);
+  border: calc(1.5 * var(--u)) solid var(--rule-soft);
+  font-size: calc(9.5 * var(--u));
+  color: var(--ink-45);
+  white-space: nowrap;
+}
+
+.corechip.on {
+  color: var(--pri);
+  border-color: color-mix(in srgb, var(--pri) 55%, transparent);
+  background: color-mix(in srgb, var(--pri) 7%, transparent);
+}
+
+.corechip.more {
+  border-style: dashed;
+}
+
+/* ---------------------------------------------------------------- brand marks
+   Real logos in their own colours — they are the proof that these are the
+   systems you already run. Desaturated until their row is live. */
+.lg {
+  width: calc(11 * var(--u));
+  height: calc(11 * var(--u));
+  flex: 0 0 auto;
+  color: var(--brand, currentColor);
+  filter: saturate(0.15);
+  opacity: 0.55;
+  transition: filter 0.5s ease, opacity 0.5s ease;
+}
+
+.corechip.on .lg,
+.way.lit .lg,
+.ws-core .lg {
+  filter: none;
+  opacity: 1;
+}
+
+.b-claude {
+  --brand: #d97757;
+}
+
+.b-openai {
+  --brand: #000000;
+}
+
+.b-goose {
+  --brand: #101010;
+}
+
+.b-slack {
+  --brand: #4a154b;
+}
+
+.b-github {
+  --brand: #181717;
+}
+
+.b-jira {
+  --brand: #0052cc;
+}
+
+/* ---------------------------------------------------------------- ways in */
+.way {
+  position: absolute;
+  right: 79.2%;
+  text-align: right;
+  transform: translateY(-50%);
+  white-space: nowrap;
+}
+
+.way-k {
+  font-size: calc(12 * var(--u));
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--ink-28);
+  transition: color 0.5s ease;
+}
+
+.way.lit .way-k {
+  color: var(--ink);
+}
+
+.way-v {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: calc(7 * var(--u));
+  height: calc(16 * var(--u));
+  font-size: calc(10 * var(--u));
+  color: var(--ink-45);
+}
+
+.way-v .set {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(5 * var(--u));
+}
+
+.w1 {
+  top: 23.4%;
+}
+
+.w2 {
+  top: 35.8%;
+}
+
+.w3 {
+  top: 48.3%;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 6.1vw, 78px);
+  line-height: 1.03;
+  letter-spacing: var(--tighter);
+  font-weight: 800;
+}
+
+/* the setup line steps back so the payoff carries full ink */
+.hero h1 .setup {
+  color: var(--ink-45);
+}
+
+/* line two of the slogan lockup — sits with the headline, not apart from it */
+.hero-lede {
+  margin: 22px 0 0;
+  max-width: 44ch;
+  font-size: 17.5px;
+  color: var(--ink-80);
+}
+
+.hero .cta-row {
+  margin-top: 30px;
+}
+
+/* ------------------------------------------------------------------ command line */
+.cmd {
+  display: flex;
+  align-items: stretch;
+  border: var(--line) solid var(--rule);
+  border-radius: var(--r-btn);
+  background: var(--panel);
+  box-shadow: var(--drop-sm);
+  overflow: hidden;
+}
+
+.cmd-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  padding: 11px 14px;
+}
+
+.cmd code {
+  font-family: var(--mono);
+  font-size: 13.5px;
+  white-space: pre;
+}
+
+.cmd .prompt {
+  color: var(--ink-45);
+  margin-right: 8px;
+}
+
+.cmd .copy {
+  flex: 0 0 auto;
+  border: 0;
+  border-left: var(--line) solid var(--rule);
+  background: var(--panel-head);
+  color: var(--ink-62);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.cmd .copy:hover {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ core strip */
+.strip {
+  border-top: var(--line) solid var(--rule-soft);
+  background: var(--paper-2);
+}
+
+.strip-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 30px 72px;
+  align-items: center;
+  padding-block: 44px;
+}
+
+.strip h2 {
+  font-size: clamp(22px, 2.2vw, 28px);
+  letter-spacing: var(--tight);
+}
+
+.strip p {
+  margin: 10px 0 0;
+  font-size: 15px;
+  color: var(--ink-62);
+}
+
+/* a supported list should look like a list, not like four more cards */
+.corelist {
+  border: var(--line) solid var(--rule);
+  border-radius: var(--r-panel);
+  background: var(--panel);
+  box-shadow: var(--drop-sm);
+  overflow: hidden;
+}
+
+.corerow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  border-top: 1.5px solid var(--rule-soft);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.corerow:first-child {
+  border-top: 0;
+}
+
+.corerow .lg {
+  width: 19px;
+  height: 19px;
+  filter: none;
+  opacity: 1;
+}
+
+/* not a promise with nowhere to click — a statement about the shape */
+.corerow.more {
+  border-top-style: dashed;
+  color: var(--ink-45);
+  font-weight: 400;
+}
+
+/* ---------------------------------------------------------------- wordmark
+   The line opens as the wordmark itself: the gap that separates the words is
+   folded away with them, so the three initials start tight against each other
+   and read NAP. Each word then grows out of its own initial, which is the
+   equation demonstrated rather than asserted, and the line settles on the full
+   name. No parenthetical is needed once the unfolding has said it.
+
+   The equation is carried by the resting state, not by the animation: the
+   three initials keep the line's full ink while the rest of each word sits at
+   label weight, so NAP can be read out of the line at any moment, including by
+   a reader who arrives after the motion or who has asked for no motion at all.
+   Nothing here leans on the header, which may not always carry the wordmark.
+
+   The hold is then only as long as it takes to read three letters. A held
+   frame pays only when the eye is on it, and the eye lands on the slogan, not
+   on a label a tenth its size; held longer, three letters with a page-wide gap
+   after them stop looking like a wordmark and start looking like a line that
+   failed to load.
+
+   Runs once, on load. `max-width` rather than `width` because the remainder of
+   a word has no width to animate to: overshooting the target simply means the
+   shorter words settle first, which is what they should do anyway. */
+.hn-w {
+  white-space: nowrap;
+}
+
+.hn-r {
+  display: inline-block;
+  max-width: 0;
+  overflow: hidden;
+  vertical-align: bottom;
+  opacity: 0;
+  animation: unfold 900ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation-delay: var(--hn-at, 0ms);
+}
+
+/* close enough together to read as one motion rather than three */
+.hn-w:nth-child(1) .hn-r { --hn-at: 560ms; }
+.hn-w:nth-child(2) .hn-r { --hn-at: 660ms; }
+.hn-w:nth-child(3) .hn-r { --hn-at: 760ms; }
+
+/* the letters the short name is made of, marked at rest */
+.hn-i {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.hn-r {
+  color: var(--ink-45);
+}
+
+@keyframes unfold {
+  from {
+    max-width: 0;
+    opacity: 0;
+  }
+  to {
+    max-width: 10ch;
+    opacity: 1;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .hn-r {
+    animation: none;
+    max-width: none;
+    opacity: 1;
+  }
+}

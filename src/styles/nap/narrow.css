@@ -1,0 +1,266 @@
+/*
+ * Narrow widths, in one place and loaded last.
+ *
+ * This page's cascade is its import order, so a breakpoint rule that lives in
+ * an early stylesheet can be silently outranked by the base rule of a later
+ * one — which is what happened to `.hero-grid`: chrome.css collapsed it to a
+ * single column, hero.css declared its two columns afterwards, and the phone
+ * kept the desktop grid. Keeping every breakpoint here makes "narrow wins"
+ * structural rather than a coincidence of file order, and puts the whole
+ * small-screen story on one screen.
+ *
+ * Two tiers, and each one has a reason rather than a device in mind:
+ *
+ *   <= 900px   nothing has room to sit beside anything else, so every grid
+ *              becomes one column and the paired-with-a-diagram layouts
+ *              stop pretending
+ *   <= 620px   the page is being read on a phone: the chrome, the rhythm and
+ *              the type all step down, and anything drawn in design units is
+ *              either made swipeable at a legible width or left out
+ */
+
+/* ================================================================== <= 900px */
+@media (max-width: 900px) {
+  /* ---- one column ------------------------------------------------------- */
+  .hero-grid {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 26px;
+  }
+
+  .row,
+  .strip-inner,
+  .rn-notes,
+  .start-inner,
+  .rn-envs,
+  .foot-grid,
+  .ss,
+  .mw-grid,
+  .ui-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* stacked, the connectors would point at the card above, not the plane */
+  .rn-link,
+  .rn-tag {
+    display: none;
+  }
+
+  .rn-envs {
+    margin-top: 20px;
+  }
+
+  .row {
+    padding-block: 34px;
+  }
+
+  /* The three ways in are right-aligned against the stage and hang off its
+     left edge — into the column gutter, on a two-column page. Stacked, the
+     stage is against the page's own margin, so it has to carry that gutter
+     itself: reserve it on both sides and centre what is left. */
+  .lift-stage {
+    max-width: min(480px, 100% - 120px);
+    margin-inline: auto;
+  }
+
+  /* ---- diagrams --------------------------------------------------------- */
+  /* a diagram in design units cannot be read at phone width at any honest
+     size; the prose around it carries the section */
+  .fig {
+    display: none;
+  }
+
+  /* Without their stage the four tabs are a list, and they are styled as one:
+     no selected card, no dwell bar, no pointer, and every name at full ink
+     because none of them is the chosen one any more. The script drops the
+     tablist semantics to match. */
+  .mw-tabs {
+    gap: 0;
+    margin-top: 4px;
+  }
+
+  .mw-tab,
+  .mw-tab.on,
+  .mw-tab:hover {
+    cursor: default;
+    padding: 14px 0;
+    border: 0;
+    border-top: 1.5px solid var(--rule-soft);
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+
+  .mw-tabs .mw-tab:first-child {
+    border-top: 0;
+  }
+
+  .mw-t {
+    color: var(--ink);
+  }
+
+  .mw-bar {
+    display: none;
+  }
+
+  /* the mockups keep their frame but drop what is not the subject: the shell's
+     own nav, and the desktop's side slots */
+  .ui-nav {
+    display: none;
+  }
+
+  .deskshot {
+    margin-top: 8px;
+  }
+
+  .dk {
+    --u: 0.14cqw;
+  }
+
+  .dk-desk {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* narrow keeps the slot the frame is about; the side slots say so
+     themselves rather than being counted */
+  .dk-win--side {
+    display: none;
+  }
+
+  .dk-win {
+    height: calc(420 * var(--u));
+  }
+
+  /* ten dock items on half the design width run off the frame and get clipped
+     mid-word; they fit again on their own padding */
+  .dk-dock {
+    gap: 0;
+  }
+
+  .dk-dock .d {
+    padding-inline: calc(7 * var(--u));
+  }
+}
+
+/* ================================================================== <= 620px */
+@media (max-width: 620px) {
+  /* ---- the page's own measurements -------------------------------------- */
+  :root {
+    --pad: 18px;
+    --gap-act: 68px;
+    --gap-band: 42px;
+    --gap-fig: 22px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  /* ---- header ----------------------------------------------------------- */
+  /* the company wordmark is the first thing that can go: the shape carries it,
+     and the one name this page must always show is the product's */
+  .mark-text {
+    display: none;
+  }
+
+  .mark {
+    gap: 10px;
+  }
+
+  nav.top {
+    gap: 2px;
+  }
+
+  nav.top a {
+    padding: 8px 9px;
+    font-size: 15px;
+  }
+
+  /* ---- hero ------------------------------------------------------------- */
+  .hero {
+    padding-top: 52px;
+    padding-bottom: 44px;
+  }
+
+  .hero h1 {
+    font-size: clamp(34px, 10vw, 46px);
+  }
+
+  .hero-lede {
+    font-size: 16px;
+  }
+
+  /* 480 design units of diagram in 350 css pixels is 7px type; the acts it
+     narrates are the three sections directly below it */
+  .lift {
+    display: none;
+  }
+
+  .hero-grid {
+    gap: 0;
+  }
+
+  /* ---- buttons ---------------------------------------------------------- */
+  /* two buttons on one line leaves neither room to be tapped */
+  .cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn {
+    justify-content: center;
+    height: 46px;
+  }
+
+  /* ---- the product mockups ---------------------------------------------- */
+  /* Sized in design units, these shrink rather than reflow, and below roughly
+     620 units their type stops being type. So they stay at the narrowest width
+     that still reads and the reader swipes across them instead. */
+  .deskshot,
+  .row-panel {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dk,
+  .shot {
+    min-width: 620px;
+  }
+
+  /* scrolling on one axis clips the other, and both frames cast a shadow
+     outside their box; the scroller owes them the room */
+  .deskshot {
+    padding-bottom: 42px;
+    margin-bottom: 6px;
+  }
+
+  .row-panel {
+    padding: 2px 6px 10px;
+  }
+
+  /* ---- act heads and section type --------------------------------------- */
+  .act-head h2,
+  .row h3,
+  .start h2,
+  .rn-head h2 {
+    font-size: clamp(26px, 7.4vw, 34px);
+  }
+
+  /* ---- footer ----------------------------------------------------------- */
+  /* the two link columns are short enough to stay side by side; only the
+     brand block wants the full width */
+  .foot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .foot-grid > :first-child {
+    grid-column: 1 / -1;
+  }
+
+  /* a line of text is a 20px target; a thumb wants half again as much */
+  .foot-list a {
+    display: inline-block;
+    padding-block: 6px;
+  }
+}
