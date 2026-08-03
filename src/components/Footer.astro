@@ -4,7 +4,7 @@
 // The Company block and the copyright are the org's and never vary. The brand
 // block and the Community links belong to whichever project the page is about,
 // so they are resolved rather than written in.
-import { ORG_DISCUSSIONS, resolveProject, type ProjectKey } from '../config/projects'
+import { ORG_DISCORD, ORG_DISCUSSIONS, resolveProject, type ProjectKey } from '../config/projects'
 
 interface Props {
   project?: ProjectKey
@@ -26,6 +26,13 @@ const currentYear = new Date().getFullYear();
       <div class="footer-section">
         <h4 class="footer-heading">Community</h4>
         <ul class="footer-links">
+          <li>
+            <a
+              href={ORG_DISCORD}
+              target="_blank"
+              rel="noopener noreferrer">Discord</a
+            >
+          </li>
           <li>
             <a
               href={active.repo}
