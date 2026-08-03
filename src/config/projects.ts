@@ -35,11 +35,7 @@ export const PROJECTS = {
     short: 'NAP',
     tagline:
       'The open-source agent platform to build, distribute, and optimize AI agents, on infrastructure you own.',
-    // The docs home is served from /index.html: a CloudFront function still
-    // redirects the bare / to a /docs/ prefix that the deploy never wrote, so
-    // / answers 403. Revert to 'https://nap.neutree.ai/' once that redirect is
-    // removed.
-    docs: 'https://nap.neutree.ai/index.html',
+    docs: 'https://docs.neutree.ai/nap/',
     repo: 'https://github.com/neutree-ai/agent-platform',
   },
   'openapi-to-skills': {
